@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font: 10px sans-serif;
+}
+
+svg text{
+  fill:grey;
+  font-size:11px;
+}
+svg .values text{
+  pointer-events:none;
+  stroke-width: 0.5px;
+}
+.groups:hover{
+  cursor:pointer;
+  font-weight:bold;
+}
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://vizjs.org/viz.v1.1.0.min.js"></script>
+<script>
+
+
+d3.csv("bobrossjoined.csv", function(csvdata) { 
+
+  let columns = ["APPLE_FRAME","AURORA_BOREALIS","BARN","BEACH","BOAT","BRIDGE","BUILDING","BUSHES","CABIN","CACTUS","CIRCLE_FRAME","CIRRUS","CLIFF","CLOUDS","CONIFER","CUMULUS","DECIDUOUS","DIANE_ANDRE","DOCK","DOUBLE_OVAL_FRAME","FARM","FENCE","FIRE","FLORIDA_FRAME","FLOWERS","FOG","FRAMED","GRASS","GUEST","HALF_CIRCLE_FRAME","HALF_OVAL_FRAME","HILLS","LAKE","LAKES","LIGHTHOUSE","MILL","MOON","MOUNTAIN","MOUNTAINS","NIGHT","OCEAN","OVAL_FRAME","PALM_TREES","PATH","PERSON","PORTRAIT","RECTANGLE_3D_FRAME","RECTANGULAR_FRAME","RIVER","ROCKS","SEASHELL_FRAME","SNOW","SNOWY_MOUNTAIN","SPLIT_FRAME","STEVE_ROSS","STRUCTURE","SUN","TOMB_FRAME","TREE","TREES","TRIPLE_FRAME","WATERFALL","WAVES","WINDMILL","WINDOW_FRAME","WINTER","WOOD_FRAMED"];
+
+  var data = new Array(columns.length*(columns.length-1));
+  for (var i = 0; i < columns.length*(columns.length-1); i++) {
+    data[i] = new Array(3);
+  }
+  //console.log(data)
+  for (var i = 0; i < columns.length; i++) {
+    //console.log(i)
+    var realindex = 0;
+    for (var j = 0; j < (columns.length); j++) {
+      //console.log(j)
+      if (i!=j){
+        data[(columns.length-1)*i+realindex][0] = columns[i];
+        data[(columns.length-1)*i+realindex][1] = columns[realindex];
+        data[(columns.length-1)*i+realindex][2] = 0.0;
+        realindex += 1;
+      } 
+      
+    }
+  }
+  //console.log(data)
+  csvdata.forEach(function(painting) {
+    for (var i = 0; i < columns.length; i++) {
+      //console.log(painting[columns[i]])
+      if (painting[columns[i]]==1){
+        var realindex = 0;
+        for (var j = 0; j < (columns.length); j++) {
+          if (i!=j){
+            if (painting[columns[realindex]]==1){
+              data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
+            }
+          } 
+          realindex += 1;
+        }
+      }
+    }
+  })
+  //console.log(data)
+
+
+var colors = {"APPLE_FRAME" : "#da4480","AURORA_BOREALIS" : "#da4480","BARN" : "#da4480","BEACH" : "#da4480","BOAT" : "#da4480","BRIDGE" : "#da4480","BUILDING" : "#da4480","BUSHES" : "#da4480","CABIN" : "#da4480","CACTUS" : "#da4480","CIRCLE_FRAME" : "#da4480","CIRRUS" : "#da4480","CLIFF" : "#da4480","CLOUDS" : "#da4480","CONIFER" : "#da4480","CUMULUS" : "#da4480","DECIDUOUS" : "#da4480","DIANE_ANDRE" : "#da4480","DOCK" : "#da4480","DOUBLE_OVAL_FRAME" : "#da4480","FARM" : "#da4480","FENCE" : "#da4480","FIRE" : "#da4480","FLORIDA_FRAME" : "#da4480","FLOWERS" : "#da4480","FOG" : "#da4480","FRAMED" : "#da4480","GRASS" : "#da4480","GUEST" : "#da4480","HALF_CIRCLE_FRAME" : "#da4480","HALF_OVAL_FRAME" : "#da4480","HILLS" : "#da4480","LAKE" : "#da4480","LAKES" : "#da4480","LIGHTHOUSE" : "#da4480","MILL" : "#da4480","MOON" : "#da4480","MOUNTAIN" : "#da4480","MOUNTAINS" : "#da4480","NIGHT" : "#da4480","OCEAN" : "#da4480","OVAL_FRAME" : "#da4480","PALM_TREES" : "#da4480","PATH" : "#da4480","PERSON" : "#da4480","PORTRAIT" : "#da4480","RECTANGLE_3D_FRAME" : "#da4480","RECTANGULAR_FRAME" : "#da4480","RIVER" : "#da4480","ROCKS" : "#da4480","SEASHELL_FRAME" : "#da4480","SNOW" : "#da4480","SNOWY_MOUNTAIN" : "#da4480","SPLIT_FRAME" : "#da4480","STEVE_ROSS" : "#da4480","STRUCTURE" : "#da4480","SUN" : "#da4480","TOMB_FRAME" : "#da4480","TREE" : "#da4480","TREES" : "#da4480","TRIPLE_FRAME" : "#da4480","WATERFALL" : "#da4480","WAVES" : "#da4480","WINDMILL" : "#da4480","WINDOW_FRAME" : "#da4480","WINTER" : "#da4480","WOOD_FRAMED": "#da4480"};
+
+var sortOrder =columns
+
+function sort(a,b){ return d3.ascending(sortOrder.indexOf(a),sortOrder.indexOf(b)); }
+
+var ch = viz.ch().data(data)
+      .padding(.01)
+      .sort(sort)
+	  .innerRadius(430)
+	  .outerRadius(450)
+	  .duration(1000)
+	  .chordOpacity(0.3)
+	  .labelPadding(.03)
+      .fill(function(d){ return colors[d];});
+
+var width=1200, height=1100;
+
+var svg = d3.select("body").append("svg").attr("height",height).attr("width",width);
+
+svg.append("g").attr("transform", "translate(600,550)").call(ch);
+
+// adjust height of frame in bl.ocks.org
+d3.select(self.frameElement).style("height", height+"px").style("width", width+"px");     
+});
+</script>
