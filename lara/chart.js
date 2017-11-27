@@ -40,12 +40,26 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 	console.log(dataset);
 	console.log(datasetCategories);
 
+	var colors = ['#ff6600', '#006600', '#ff0055', '#bb09A0', '#ff0000', '#ff0000', '#ff0000']
 	var chart = c3.generate({
 		bindto: '#chart',
 		data: {
 			columns: datasetCategories,
 		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
+/* 		colors: {
+            categories: colors[1],
+        }, */
+		onclick: function (d, i) { 
+			console.log("onclick", d, i);
+			if (d.ratio != 1){
+				for (var i = 0; i < categories.length; i++){
+					if (categories[i] != d.id){
+						chart.unload({ids: categories[i]})}}}
+			else{
+				for (var i = 0; i < categories.length; i++){
+					if (categories[i] != d.id){
+						chart.load({columns: [datasetCategories[i]]})}};
+			}},
 		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
 		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
 	}}); 
