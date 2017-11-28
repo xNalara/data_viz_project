@@ -21,65 +21,76 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 				dataset[i][0] = elem[columns2[1]];
 	}}})
 
-	var categories = ["Frames", "Structures", "Plants", "Landscape", "Weather", "Humans", "Guests"];
+	var categories = ["Frames", "Structures", "Plants", "Landscape", "Weather", "Guests", "Humans"];
 	var datasetCategories = new Array(categories.length);
 	for (var i = 0; i < categories.length; i++) {
-		datasetCategories[i] = new Array(2);
-		datasetCategories[i][0] = categories[i];
-		datasetCategories[i][1] = 0;
+		datasetCategories[i] = 0;
 	}
 				
 	dataset.forEach(function(elem) {
 		for (var i = 0; i < categories.length; i++){
-			if (elem[0] === datasetCategories[i][0]){
-				datasetCategories[i][1] += elem[2];
+			if (elem[0] === categories[i]){
+				datasetCategories[i] += elem[2];
 			}
 		}
 	});
 	
 	console.log(dataset);
+	console.log(categories);
 	console.log(datasetCategories);
+	
+	var categoryColors = ["#000000", "#776f6f", "#399661", "#55b247", "#7cccff", "#130ea0", "#ffeec9"];
+	var unselectedColor = '#888888';
 
-	var colors = ['#ff6600', '#006600', '#ff0055', '#bb09A0', '#ff0000', '#ff0000', '#ff0000']
-	var chart = c3.generate({
-		bindto: '#chart',
-		data: {
-			columns: datasetCategories,
-		type : 'pie',
-/* 		colors: {
-            categories: colors[1],
-        }, */
-		onclick: function (d, i) { 
-			console.log("onclick", d, i);
-			if (d.ratio != 1){
-				for (var i = 0; i < categories.length; i++){
-					if (categories[i] != d.id){
-						chart.unload({ids: categories[i]})}}}
-			else{
-				for (var i = 0; i < categories.length; i++){
-					if (categories[i] != d.id){
-						chart.load({columns: [datasetCategories[i]]})}};
-			}},
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	}}); 
-});});
+	var width = 420,
+		barHeight = 40;
 
-/* setTimeout(function () {
-    chart.load({
-        columns: [
-            ["setosa", 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.6, 0.4, 0.3, 0.2, 0.2, 0.2, 0.2],
-            ["versicolor", 1.4, 1.5, 1.5, 1.3, 1.5, 1.3, 1.6, 1.0, 1.3, 1.4, 1.0, 1.5, 1.0, 1.4, 1.3, 1.4, 1.5, 1.0, 1.5, 1.1, 1.8, 1.3, 1.5, 1.2, 1.3, 1.4, 1.4, 1.7, 1.5, 1.0, 1.1, 1.0, 1.2, 1.6, 1.5, 1.6, 1.5, 1.3, 1.3, 1.3, 1.2, 1.4, 1.2, 1.0, 1.3, 1.2, 1.3, 1.3, 1.1, 1.3],
-            ["virginica", 2.5, 1.9, 2.1, 1.8, 2.2, 2.1, 1.7, 1.8, 1.8, 2.5, 2.0, 1.9, 2.1, 2.0, 2.4, 2.3, 1.8, 2.2, 2.3, 1.5, 2.3, 2.0, 2.0, 1.8, 2.1, 1.8, 1.8, 1.8, 2.1, 1.6, 1.9, 2.0, 2.2, 1.5, 1.4, 2.3, 2.4, 1.8, 1.8, 2.1, 2.4, 2.3, 1.9, 2.3, 2.5, 2.3, 1.9, 2.0, 2.3, 1.8],
-        ]
-    });
-}, 1500);
+ 	var x = d3.scale.linear()
+		.domain([0, d3.max(datasetCategories)])
+		.range([0, width-150]); 
 
-setTimeout(function () {
-    chart.unload({
-        ids: 'data1'
-    });
-    chart.unload({
-        ids: 'data2'
-    });
-}, 2500); */
+	var overallChart = d3.select("#overallChart")
+		.attr("width", width)
+		.attr("height", barHeight * datasetCategories.length);
+
+	var bar = overallChart.selectAll("g")
+		.data(datasetCategories)
+		.enter().append("g")
+		.attr("transform", function(d, i) { return "translate(100," + i * barHeight + ")"; });
+
+	bar.append("rect")
+		.attr("width", x)
+		.attr("height", barHeight - 1)
+		
+	var rect = bar.selectAll("rect")
+	
+	bar.attr('fill', function (d, i) { return categoryColors[i]})
+		.on('mouseover', function(d, i) {
+			bar.attr("fill", unselectedColor);
+			d3.select(this).attr("fill", categoryColors[i])})
+		.on('mouseout', function() {
+			bar.attr("fill", function(d, i) {
+			return categoryColors[i];});});	
+
+	bar.append("text")
+		.attr("x", function(d) { return x(d) + 5; })
+		.attr("y", barHeight / 2)
+		.attr("dy", ".35em")
+		.attr("text-anchor", "start")
+		.text(function(d) { return d; });
+		
+	bar.append("text")
+		.attr("x", function(d) { return -5; })
+		.attr("y", barHeight / 2)
+		.attr("dy", ".35em")
+		.attr("text-anchor", "end")
+		.text(function(d, i) { return categories[i]; });
+
+	var barUpdate = bar.data(datasetCategories);
+	var barEnter = barUpdate.enter().append("div")
+	barEnter.style("width", function(d) {return x(d) + "px";})
+			.text(function(d) {return d;})
+
+
+})}); 
+
