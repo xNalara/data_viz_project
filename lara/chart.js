@@ -82,15 +82,54 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 	bar.append("rect")
 		.attr("width", x)
 		.attr("height", barHeight - 1)
-		
-	var rect = bar.selectAll("rect")
 	
-	bar.attr('fill', function (d, i) {return getColor(d, i)}) 
+	bar.attr("fill", function (d, i) {return getColor(d, i)}) 
 		.on('mouseover', function(d, i) {
 			bar.attr("fill", unselectedColor);
-			d3.select(this).attr("fill", function (d, j) {return getColor(d, i)})})
+			d3.select(this).attr("fill", function (d, j) {return getColor(d, i)})
+			
+			var barHeight2 = ((barHeight * categories[0].length) / (subcategories[i][0].length));
+ 			var y = d3.scale.linear()
+			.domain([0, d3.max(subcategories[i][1])])
+			.range([0, width-150]);  
+			
+			var detailedChart = d3.select("#detailedChart")
+			.attr("width", width)
+			.attr("height", barHeight2 * subcategories[i][1].length);
+			
+			var bar2 = detailedChart.selectAll("g")
+			.data(subcategories[i][1])
+			.enter().append("g")
+			.attr("transform", function(d, i) { return "translate(100," + i * barHeight2 + ")"; });
+			
+			bar2.append("rect")
+			.attr("width", y)
+			.attr("height", barHeight2 - 1)
+			.attr("fill", function (d, j) {return getColor(d, i)}); 
+			
+			bar2.append("text")
+			.attr("x", function(d, j) { return y(subcategories[i][1][j]) + 5; })
+			.attr("y", barHeight2 / 2)
+			.attr("dy", ".35em")
+			.attr("text-anchor", "start")
+			.text(function(d, j) { return subcategories[i][1][j]; });
+			
+			bar2.append("text")
+			.attr("x", function(d) { return -5; })
+			.attr("y", barHeight2 / 2)
+			.attr("dy", ".35em")
+			.attr("text-anchor", "end")
+			.text(function(d, j) { return subcategories[i][0][j]; });
+
+			var barUpdate = bar.data(function(d, i) {return subcategories[1][i]});
+			var barEnter = barUpdate.enter().append("div")
+			barEnter.style("width", function(d) {return y(d) + "px";})
+				.text(function(d) {return d;})
+			})
 		.on('mouseout', function() {
-			bar.attr("fill", function (d, i) {return getColor(d, i)})});
+			bar.attr("fill", function (d, i) {return getColor(d, i)})
+			d3.select("#detailedChart").selectAll("g").remove();
+			});
 
 	bar.append("text")
 		.attr("x", function(d) { return x(d) + 5; })
