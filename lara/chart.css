@@ -2,10 +2,6 @@
 	/* outline: #000000 solid 1px; */
 }
  
- .chart rect:hover {
-  /* fill: brown; */
-} 
-
 .chart text {
   fill: black;
   font: 15px sans-serif;

@@ -1,5 +1,5 @@
-d3.csv("elements-by-episode.csv", function(csvdata) { 
-  let columns = ["APPLE_FRAME","AURORA_BOREALIS","BARN","BEACH","BOAT","BRIDGE","BUILDING","BUSHES","CABIN","CACTUS","CIRCLE_FRAME","CIRRUS","CLIFF","CLOUDS","CONIFER","CUMULUS","DECIDUOUS","DIANE_ANDRE","DOCK","DOUBLE_OVAL_FRAME","FARM","FENCE","FIRE","FLORIDA_FRAME","FLOWERS","FOG","FRAMED","GRASS","GUEST","HALF_CIRCLE_FRAME","HALF_OVAL_FRAME","HILLS","LAKE","LAKES","LIGHTHOUSE","MILL","MOON","MOUNTAIN","MOUNTAINS","NIGHT","OCEAN","OVAL_FRAME","PALM_TREES","PATH","PERSON","PORTRAIT","RECTANGLE_3D_FRAME","RECTANGULAR_FRAME","RIVER","ROCKS","SEASHELL_FRAME","SNOW","SNOWY_MOUNTAIN","SPLIT_FRAME","STEVE_ROSS","STRUCTURE","SUN","TOMB_FRAME","TREE","TREES","TRIPLE_FRAME","WATERFALL","WAVES","WINDMILL","WINDOW_FRAME","WINTER","WOOD_FRAMED"];
+d3.csv("elements-by-episode_new.csv", function(csvdata) { 
+  let columns = ["Apple Frame", "Aurora Borealis", "Barn", "Beach", "Boat", "Bridge", "Building", "Bushes", "Cabin", "Cactus", "Circle Frame", "Cirrus", "Cliff", "Clouds", "Conifer", "Cumulus", "Deciduous", "Dock", "Double Oval Frame", "Farm", "Fence", "Fire", "Florida Frame", "Flowers", "Fog", "Framed", "Grass", "Guest", "Half Circle Frame", "Half Oval Frame", "Hills", "Lake", "Lighthouse", "Mill", "Moon", "Mountain", "Mountains", "Night", "Ocean", "Oval Frame", "Palm Trees", "Path", "Person", "Portrait", "Rectangle 3D Frame", "Rectangular Frame", "River", "Rocks", "Seashell Frame", "Snow", "Snowy Mountain", "Split Frame", "Steve Ross", "Structure", "Sun", "Tomb Frame", "Tree", "Trees", "Triple Frame", "Waterfall", "Waves", "Windmill", "Window Frame", "Winter", "Wood Framed"];
   var dataset = new Array(columns.length);
   for (var i = 0; i < columns.length; i++) {
     dataset[i] = new Array(3);
@@ -13,7 +13,7 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 			dataset[i][2] += 1;}
   }})
   
-  d3.csv("elements-categories.csv", function(csvdata2) {
+  d3.csv("elements-categories_new.csv", function(csvdata2) {
 	let columns2 = ["ELEMENT", "CATEGORY"];
 	csvdata2.forEach(function(elem) {
 		for (var i = 0; i < columns.length; i++) {
@@ -63,12 +63,14 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 	var categoryColors = [["Frames", "Weather", "Structures", "Landscape", "Plants", "Guests", "Humans"], ["#000000", "#7cccff", "#666666", "#55b247", "#399661", "#130ea0", "#ffeec9"]];
 	var unselectedColor = '#AAAAAA';
 
-	var width = 420,
-		barHeight = 40;
-
+	var width = 700,
+		barHeight = 40,
+		leftMargin = 160;
+		rightMargin = 200;
+		
  	var x = d3.scale.linear()
 		.domain([0, d3.max(categories[1])])
-		.range([0, width-150]); 
+		.range([0, width-rightMargin]); 
 
 	var overallChart = d3.select("#overallChart")
 		.attr("width", width)
@@ -77,7 +79,7 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 	var bar = overallChart.selectAll("g")
 		.data(categories[1])
 		.enter().append("g")
-		.attr("transform", function(d, i) { return "translate(100," + i * barHeight + ")"; });
+		.attr("transform", function(d, i) { return "translate(" + leftMargin + "," + i * barHeight + ")"; });
 
 	bar.append("rect")
 		.attr("width", x)
@@ -91,7 +93,7 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 			var barHeight2 = ((barHeight * categories[0].length) / (subcategories[i][0].length));
  			var y = d3.scale.linear()
 			.domain([0, d3.max(subcategories[i][1])])
-			.range([0, width-150]);  
+			.range([0, width-rightMargin]);  
 			
 			var detailedChart = d3.select("#detailedChart")
 			.attr("width", width)
@@ -100,7 +102,7 @@ d3.csv("elements-by-episode.csv", function(csvdata) {
 			var bar2 = detailedChart.selectAll("g")
 			.data(subcategories[i][1])
 			.enter().append("g")
-			.attr("transform", function(d, i) { return "translate(100," + i * barHeight2 + ")"; });
+			.attr("transform", function(d, i) { return "translate(" + leftMargin + "," + i * barHeight2 + ")"; });
 			
 			bar2.append("rect")
 			.attr("width", y)
