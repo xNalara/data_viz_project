@@ -159,6 +159,7 @@ In Figure \ref{fig:firstidea}\cite{firstidea} you can see our first idea for a v
 
 
 \chapter{Creating a Concept}
+\section{First Concept}
 
 We created a draft of the concept of our visualization. Starting with collecting all the ideas we had up to this point we created an overview of the designs of the several graphs and transitions between them. 
 
@@ -188,14 +189,53 @@ We can apply filters by clicking on elements (one click: add element to filter, 
 
 \newthought{An overall color stream} of the color usage during the seasons is also a nice way to visualize how Bob's preferences for colors might change over 31 seasons. We show how often every color was used in a season and create a graph out of this information. This section can be either shown by clicking on the used colors section in the detailed painting information (for the overlay version, as drawn in \ref{fig:concept2}) or in case of the third idea for the detailed painting information also on the right side. In order to represent the colors as exact as possible we created another database with the hexadecimal values of the used colours in the paintings. We took all hexcodes from \cite{tpark} with the exception of \quo{Black Gesso}\footnote{colour value was chosen by us}, \quo{Burnt Umber}\cite{wikiBurntUmber}, \quo{Indian Red}\cite{wikiIndianRed}, \quo{Liquid Black}\footnote{value was set by us} and \quo{Liquid Clear}\footnote{value was set by us}. 
 
+\section{Critic and Problems}
 
-\newthought{Concept map} - While thinking about the right way to present the elements in a graph, on the website 
+\newthought{The basic element graph} had to much data in the first implementation. The time it took to react was not acceptable. So we decided that it is better to show the connections between the categories instead of the connections between the elements.
+
+\newthought{Pie charts} are hard to read as we learned in the lecture. So we exchanged the pie chart idea by two bar diagrams. The first one shows as well the overall values of the categories we created. The second shows the elements of the category that was chosen in the first bar chart.
+
+\newthought{We decided that telling a story} will be better than trying to link all diagrams together. So created a whole new overall concept in which we will embed the graphs. Hereby we decided to show the detailed painting information on the right part of the website, next to the expanded element graph, which we call now concept map (since it is an own visualization now).
+
+\newthought{Moreover, the database} needed to be cleaned in the way of how the elements, paintings and colors were saved (as capslock string). We wanted to be able to take directly this data, so we changed it's style according to the rules for titles. Also we realized that there are some elements that can we delete or merge with other elements.
+
+\chapter{Final Concept}
+
+\newthought{The final concept} divides the visualizations we have in their three main topics: paintings, elements and colors. As seen in figure \ref{fig:final1} the connections of the elements with the painting will have the color of their category. By this it will be easier to understand the visualization. We also added a season brush. Without the season brush we would have to many elements to show and the visualization would clutter. The season brush will have a fixed maximum size. On the right side we see the detailed information for the painting that is selected on the graph. \\
+
+\begin{figure}
+	\includegraphics{Images/final_concept_draft_1.jpg}
+	\caption{Final Concept: Paintings}
+	\label{fig:final1}
+\end{figure}
+
+In figure \ref{fig:final2} we want to show the connections between the categories of the elements. Since it is too hard to draw we represented it only by a circle in this draft. Here we also have the bar charts that show the total appearances of categories and their elements. We also have the season brush as in the draft before. This is an element that connects all the different parts of the websites. The season brush in this part applies as well to the circle as to the bar charts.\\
+
+\begin{figure}
+	\includegraphics{Images/final_concept_draft_2.jpg}
+	\caption{Final Concept: Elements}
+	\label{fig:final2}
+\end{figure}
+
+In figure \ref{fig:final3} we see the color stream as described before. We added an axis to show the seasons and highlight the color that was selected. The season brush will apply also to this visualization.\\
+
+\newthought{The final concept} 
+\begin{figure}
+	\includegraphics{Images/final_concept_draft_3.jpg}
+	\caption{Final Concept: Colors}
+	\label{fig:final3}
+\end{figure}
+
+\chapter{Implementation}
+
+\section{The Concept Map}
+\newthought{While thinking about the right way} to present the elements in a graph, on the website 
  - "The Conversation" website -  we found the inspiration - concept map shown in figure x. We decided to use this idea to present elements drawn in each episode. First implementation is shown in figure x and it presents elements drawn in each episode during the first season of the TV show. Further we want to show the elements for all seasons - in total there are 31 seasons. As this probably will not fit into single graph, we will enable filtering by seasons, initally showing first few seasons. We also plan to provide filtering by different elements (for example trees, cottages, etc) or similar groups of elements (mountain landscape, winter landscape, etc).
 
 \begin{figure}
 	\includegraphics{Images/conceptMapIdea.png}
 	\caption{Inspiration for concept map visualization - taken from website http://www.findtheconversation.com/concept-map/}
-	\label{fig:concept2}
+	\label{fig:concept1}
 \end{figure}
 
 \begin{figure}
