@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font: 10px sans-serif;
+}
+
+svg text{
+  fill:grey;
+  font-size:11px;
+}
+svg .values text{
+  pointer-events:none;
+  stroke-width: 0.5px;
+}
+.groups:hover{
+  cursor:pointer;
+  font-weight:bold;
+}
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://vizjs.org/viz.v1.1.0.min.js"></script>
+<script>
+
+
+d3.csv("bobrosscategorized.csv", function(csvdata) { 
+
+  let columns = [ "LANDSCAPES","FRAMES", "STRUCTURES", "PLANTS", "GUESTS", "WEATHER", "HUMANS"];
+
+
+  var data = new Array(columns.length*(columns.length-1));
+  for (var i = 0; i < columns.length*(columns.length-1); i++) {
+    data[i] = new Array(3);
+  }
+  //console.log(data)
+  for (var i = 0; i < columns.length; i++) {
+    //console.log(i)
+    var realindex = 0;
+    for (var j = 0; j < (columns.length); j++) {
+      //console.log(j)
+      if (i!=j){
+        data[(columns.length-1)*i+realindex][0] = columns[i];
+        data[(columns.length-1)*i+realindex][1] = columns[realindex];
+        data[(columns.length-1)*i+realindex][2] = 0.0;
+        realindex += 1;
+      } 
+      
+    }
+  }
+  //console.log(data)
+  csvdata.forEach(function(painting) {
+    for (var i = 0; i < columns.length; i++) {
+      //console.log(painting[columns[i]])
+      if (painting[columns[i]]==1){
+        var realindex = 0;
+        for (var j = 0; j < (columns.length); j++) {
+          if (i!=j){
+            if (painting[columns[realindex]]==1){
+              data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
+            }
+          } 
+          realindex += 1;
+        }
+      }
+    }
+  })
+  //console.log(data)
+
+var colors = {"FRAMES" : "#000000","STRUCTURES" : "#776f6f","PLANTS" : "#399661","LANDSCAPES" : "#55b247","WEATHER" : "#7cccff","GUESTS" : "#130ea0","HUMANS" : "#ffeec9"};
+
+
+var sortOrder =columns
+
+function sort(a,b){ return d3.ascending(sortOrder.indexOf(a),sortOrder.indexOf(b)); }
+
+var ch = viz.ch().data(data)
+      .padding(.01)
+      .sort(sort)
+    .innerRadius(430)
+    .outerRadius(450)
+    .duration(1000)
+    .chordOpacity(0.3)
+    .labelPadding(.03)
+      .fill(function(d){ return colors[d];});
+
+var width=1200, height=1100;
+
+var svg = d3.select("body").append("svg").attr("height",height).attr("width",width);
+
+svg.append("g").attr("transform", "translate(600,550)").call(ch);
+
+// adjust height of frame in bl.ocks.org
+d3.select(self.frameElement).style("height", height+"px").style("width", width+"px");     
+});
+</script>

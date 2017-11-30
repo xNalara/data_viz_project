@@ -18,19 +18,33 @@
     </style>
   </head>
   <body>
-    <svg width="1400" height="900"></svg>
     <script>
+
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    padding = {top: 60, right: 60, bottom: 60, left: 60},
+    outerWidth = 1400,
+    outerHeight = 900,
+    innerWidth = outerWidth - margin.left - margin.right,
+    innerHeight = outerHeight - margin.top - margin.bottom,
+    width = innerWidth - padding.left - padding.right,
+    height = innerHeight - padding.top - padding.bottom;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", outerWidth)
+        .attr("height", outerHeight)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     d3.csv("bobrossjoined.csv", function(dd) { 
-      const color_names = ["ALIZARIN_CRIMSON", "BLACK_GESSO", "BRIGHT_RED", "BURNT_UMBER", "CADMIUM_YELLOW", "DARK_SIENNA", "INDIAN_RED", "INDIAN_YELLOW", "LIQUID_BLACK", "LIQUID_CLEAR", "MIDNIGHT_BLACK ","PHTHALO_BLUE", "PHTHALO_GREEN ", "PRUSSIAN_BLUE", "SAP_GREEN", "TITANIUM_WHITE", "VAN_DYKE_BROWN", "YELLOW_OCHRE"];
+      const color_names = ["ALIZARIN_CRIMSON", "BLACK_GESSO", "BRIGHT_RED", "BURNT_UMBER", "CADMIUM_YELLOW", "DARK_SIENNA", "INDIAN_RED", "INDIAN_YELLOW", "LIQUID_BLACK", "LIQUID_CLEAR", "MIDNIGHT_BLACK","PHTHALO_BLUE", "PHTHALO_GREEN", "PRUSSIAN_BLUE", "SAP_GREEN", "TITANIUM_WHITE", "VAN_DYKE_BROWN", "YELLOW_OCHRE"];
       //, "MIDNIGHT_BLACK", "PHTHALO_GREEN"
       const hexadec = ["#4E1500", "#000000", "#DB0000", "#8A3324", "#FFEC00", "#5F2E1F", "#CD5C5C", "#FFB800", "#000000", "#C0C2C4",  "#000000", "#0C0040", "#102E3C","#021E44","#0A3410", "#FFFFFF", "#221B15", "#C79B00"];
 
       const generateData = keys => {
         const n = 31;
         const data = d3.range(1,n+1).map((d, i) => {
-          const row = {"ALIZARIN_CRIMSON" :0 , "BLACK_GESSO":0 , "BRIGHT_RED":0 , "BURNT_UMBER":0 , "CADMIUM_YELLOW":0 , "DARK_SIENNA":0 , "INDIAN_RED":0 , "INDIAN_YELLOW":0 , "LIQUID_BLACK":0 , "LIQUID_CLEAR":0 , "PHTHALO_BLUE":0 , "PRUSSIAN_BLUE":0 , "SAP_GREEN":0 , "TITANIUM_WHITE":0 , "VAN_DYKE_BROWN":0 , "YELLOW_OCHRE":0 };
+          const row = {"ALIZARIN_CRIMSON" :0 , "BLACK_GESSO":0 , "BRIGHT_RED":0 , "BURNT_UMBER":0 , "CADMIUM_YELLOW":0 ,"MIDNIGHT_BLACK":0, "PHTHALO_GREEN":0, "DARK_SIENNA":0 , "INDIAN_RED":0 , "INDIAN_YELLOW":0 , "LIQUID_BLACK":0 , "LIQUID_CLEAR":0 , "PHTHALO_BLUE":0 , "PRUSSIAN_BLUE":0 , "SAP_GREEN":0 , "TITANIUM_WHITE":0 , "VAN_DYKE_BROWN":0 , "YELLOW_OCHRE":0 };
           row["time"]= i;
           
             dd.filter(element => element['SEASON']==i).
@@ -53,14 +67,15 @@
         
       
       const svg = d3.select('svg')
-      const width = +svg.attr('width')
-      const height = +svg.attr('height')
+      const width = innerWidth
+      const height = innerHeight
       
       const stack = d3.stack().offset(d3.stackOffsetWiggle)
       const xValue = d => d.time
       const xScale = d3.scaleLinear()
       const yScale = d3.scaleLinear()
       const colorScale = d3.scaleOrdinal().range(hexadec)
+
 
       const area = d3.area()
         .x(d => xScale(xValue(d.data)))
@@ -75,21 +90,23 @@
         // console.log(stack.keys(data.keys))
         stack.keys(data.keys)
         colorScale.domain(data.keys)
+        delete data.keys;
         console.log(data);
-        const stacked = stack(data)
+        const stacked = stack(data);
       	
         xScale
-          .domain(d3.extent(data, d => xValue(d)))
-          .range([0, width])
+          .domain(d3.extent(data, d => d.time))
+          .range([0, width]);
+
         
         yScale
           .domain([
             d3.min(stacked[0], d => d[0]),
             d3.max(stacked[stacked.length - 1], d => d[1])
           ])
-          .range([height, 0])
+          .range([height, 0]);
         
-        const transition = d3.transition().duration(1000)
+        const transition = d3.transition().duration(1000);
         
         const paths = svg.selectAll('path').data(stacked)
         paths
@@ -98,16 +115,28 @@
             .attr('fill', d => colorScale(d.key))
             .attr('stroke', d => colorScale(d.key))
           .transition(transition)
-            .attr('d', area)
+            .attr('d', area);
 
-        const labels = svg.selectAll('text').data(stacked)
+        const labels = svg.selectAll('text').data(stacked);
         labels
           .enter().append('text')
             .attr('class', 'area-label')
           .merge(labels)
             .text(d => d.key)
           .transition(transition)
-            .attr('transform', d3.areaLabel(area))
+            .attr('transform', d3.areaLabel(area));
+
+                    // Add the x Axis
+        var x_axis = d3.axisBottom()
+                   .scale(xScale);
+        svg.append("g")
+        .attr("transform", "translate(0," + (innerHeight) + ")")
+       .call(x_axis);
+
+       svg.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ (innerWidth/2) +","+(outerHeight)+")")  // centre below axis
+            .text("Season");
       }
       
       const renderGeneratedData = () => {
