@@ -82,8 +82,12 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 		.attr("transform", function(d, i) { return "translate(" + leftMargin + "," + i * barHeight + ")"; });
 
 	bar.append("rect")
-		.attr("width", x)
 		.attr("height", barHeight - 1)
+		.attr("width", 0)
+		.transition()
+		.duration(500)
+		.attr("width", x);
+		
 	
 	bar.attr("fill", function (d, i) {return getColor(d, i)}) 
 		.on('mouseover', function(d, i) {
@@ -105,11 +109,18 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 			.attr("transform", function(d, i) { return "translate(" + leftMargin + "," + i * barHeight2 + ")"; });
 			
 			bar2.append("rect")
+			.attr("width", 0)
+			.transition()
+			.duration(500)
 			.attr("width", y)
-			.attr("height", barHeight2 - 1)
-			.attr("fill", function (d, j) {return getColor(d, i)}); 
+			.attr("height", barHeight2 - 1);
+			
+			bar2.attr("fill", function (d, j) {return getColor(d, i)}); 
 			
 			bar2.append("text")
+			.attr("x", 5)
+			.transition()
+			.duration(500)
 			.attr("x", function(d, j) { return y(subcategories[i][1][j]) + 5; })
 			.attr("y", barHeight2 / 2)
 			.attr("dy", ".35em")
@@ -134,6 +145,9 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 			});
 
 	bar.append("text")
+		.attr("x", 5)
+		.transition()
+		.duration(500)
 		.attr("x", function(d) { return x(d) + 5; })
 		.attr("y", barHeight / 2)
 		.attr("dy", ".35em")
