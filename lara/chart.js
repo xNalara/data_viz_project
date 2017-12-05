@@ -68,7 +68,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 		leftMargin = 160;
 		rightMargin = 200;
 		
- 	var x = d3.scale.linear()
+ 	var x = d3.scaleLinear()
 		.domain([0, d3.max(categories[1])])
 		.range([0, width-rightMargin]); 
 
@@ -95,7 +95,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 			d3.select(this).attr("fill", function (d, j) {return getColor(d, i)})
 			
 			var barHeight2 = ((barHeight * categories[0].length) / (subcategories[i][0].length));
- 			var y = d3.scale.linear()
+ 			var y = d3.scaleLinear()
 			.domain([0, d3.max(subcategories[i][1])])
 			.range([0, width-rightMargin]);  
 			
