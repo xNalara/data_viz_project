@@ -230,7 +230,7 @@ In figure \ref{fig:final3} we see the color stream as described before. We added
 
 \section{The Concept Map}
 \newthought{While thinking about the right way} to present the elements in a graph, on the website 
- - "The Conversation" website -  we found the inspiration - concept map shown in figure x. We decided to use this idea to present elements drawn in each episode. First implementation is shown in figure x and it presents elements drawn in each episode during the first season of the TV show. Further we want to show the elements for all seasons - in total there are 31 seasons. As this probably will not fit into single graph, we will enable filtering by seasons, initally showing first few seasons. We also plan to provide filtering by different elements (for example trees, cottages, etc) or similar groups of elements (mountain landscape, winter landscape, etc).
+ - "The Conversation" website -  we found the inspiration - concept map shown in figure x. We decided to use this idea to present elements drawn in each episode. First implementation is shown in figure x and it presents elements drawn in each episode during the first season of the TV show. Further we want to show the elements for all seasons - in total there are 31 seasons. As this probably will not fit into single graph, we will enable filtering by seasons, initially showing first few seasons. We also plan to provide filtering by different elements (for example trees, cottages, etc) or similar groups of elements (mountain landscape, winter landscape, etc).
 
 \begin{figure}
 	\includegraphics{Images/conceptMapIdea.png}
@@ -244,6 +244,13 @@ In figure \ref{fig:final3} we see the color stream as described before. We added
 	\label{fig:concept2}
 \end{figure}
 
+\section{Bar Charts}
+\newthought{The overall (category) bar chart} shows the summed up appearances of elements. These are grouped by category. With a season brush we can choose only to sum up the elements of a certain time. \\
+For this, we first read the data about the appearances of elements in paintings from the corresponding csv file. In fact, the data has the form of a matrix with a 1, if the element appears in a painting, else the entry is 0. Since some of the columns where redundant, we had to clean the data first. In fact, we deleted the columns \quo{frames} (since we can compute this column from all the other elements that belong to the category \quo{frames}) and \quo{lakes} since it was zero. After reading the file, we construct an array with the length of the total amount of elements we have. Each entry has another array of length 3. The first entry is for category, the second for the element and the third for the total amount of the element. By iterating through the data from the csv file, we increase the total amount for every element, if it appears in a painting. In the next step we read another csv file, that tells us to which category the elements belong. The corresponding category is added to the data structure. \\
+
+\newthought{The detailed (element) bar chart} works similar to the other one. The only difference is, that we create the data structure in a slightly different way. Here, we create an array of the total amount of the categories. For each entry we create another array. This array contains two more arrays; one for the elements names and the other one for the corresponding values. \\
+
+\newthought{After creating the data structure with the data we need} we determine an array with the categories and the colors the categories will use as well a color for not highlighted content. We create the overall (category) bar chart as we did it in our exercise lesson. In order to show the detailed (element) bar chart as well when we use a mouseover over a category, we add a function for the behavior at mouseover actions. In this function we create another bar chart (in the same way as the first one). The main difference is, that the bars scale according to the amount of the elements, so that both diagrams always have the same height. This shall make them nice looking when displaying them next to each other. Moreover, they adapt their color to their category's color. For both bar charts we have a smooth transition when showing them.
 
 %%
 % The back matter contains appendices, bibliographies, indices, glossaries, etc.
