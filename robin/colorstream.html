@@ -18,6 +18,8 @@
     </style>
   </head>
   <body>
+
+
     <script>
 
     var margin = {top: 20, right: 20, bottom: 20, left: 20},
@@ -28,48 +30,104 @@
     innerHeight = outerHeight - margin.top - margin.bottom,
     width = innerWidth - padding.left - padding.right,
     height = innerHeight - padding.top - padding.bottom;
-
-    var svg = d3.select("body").append("svg")
-        .attr("width", outerWidth)
-        .attr("height", outerHeight)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+    const contextHeight = 50;
+    const contextWidth = width;
 
     d3.csv("bobrossjoined.csv", function(dd) { 
       const color_names = ["ALIZARIN_CRIMSON", "BLACK_GESSO", "BRIGHT_RED", "BURNT_UMBER", "CADMIUM_YELLOW", "DARK_SIENNA", "INDIAN_RED", "INDIAN_YELLOW", "LIQUID_BLACK", "LIQUID_CLEAR", "MIDNIGHT_BLACK","PHTHALO_BLUE", "PHTHALO_GREEN", "PRUSSIAN_BLUE", "SAP_GREEN", "TITANIUM_WHITE", "VAN_DYKE_BROWN", "YELLOW_OCHRE"];
       //, "MIDNIGHT_BLACK", "PHTHALO_GREEN"
       const hexadec = ["#4E1500", "#000000", "#DB0000", "#8A3324", "#FFEC00", "#5F2E1F", "#CD5C5C", "#FFB800", "#000000", "#C0C2C4",  "#000000", "#0C0040", "#102E3C","#021E44","#0A3410", "#FFFFFF", "#221B15", "#C79B00"];
 
-      const generateData = keys => {
-        const n = 31;
-        const data = d3.range(1,n+1).map((d, i) => {
+      const generateData = (keys,n1,n2) => {
+
+        const data = d3.range(n2-n1+2).map((d, i) => {
+          console.log(n1+i-1)
           const row = {"ALIZARIN_CRIMSON" :0 , "BLACK_GESSO":0 , "BRIGHT_RED":0 , "BURNT_UMBER":0 , "CADMIUM_YELLOW":0 ,"MIDNIGHT_BLACK":0, "PHTHALO_GREEN":0, "DARK_SIENNA":0 , "INDIAN_RED":0 , "INDIAN_YELLOW":0 , "LIQUID_BLACK":0 , "LIQUID_CLEAR":0 , "PHTHALO_BLUE":0 , "PRUSSIAN_BLUE":0 , "SAP_GREEN":0 , "TITANIUM_WHITE":0 , "VAN_DYKE_BROWN":0 , "YELLOW_OCHRE":0 };
-          row["time"]= i;
+          row["time"]= n1+i-1;
           
-            dd.filter(element => element['SEASON']==i).
-              forEach(function(elem) {
-                color_names.forEach(function(key) {
-                  var number = Number(row[key]);
-                  if (number == NaN) {number = 0};
-                  row[key]=Number(number)+Number(elem[key]);
-                });
+          dd.filter(element => element['SEASON']==n1+i-1).
+            forEach(function(elem) {
+              color_names.forEach(function(key) {
+                var number = Number(row[key]);
+                if (number == NaN) {number = 0};
+                row[key]=Number(number)+Number(elem[key]);
               });
+            });
           return row;
         });
         //console.log(data)
         data.keys = keys
         return data
       };
-        
 
 
-        
-      
-      const svg = d3.select('svg')
       const width = innerWidth
       const height = innerHeight
-      
+
+      var svgcontext = d3.select("body").append('svg')
+        .attr("class","svgcontext")
+        .attr("width", outerWidth)
+        .attr("height", outerHeight)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+      // Create a context for a brush
+      const xScaleGeneral=d3.scaleLinear()
+          .domain([0,31])
+          .range([0, width]);
+      var contextXScale = d3.scaleLinear()
+        .range([0, width])
+        .domain(xScaleGeneral.domain());
+
+      var contextAxis = d3.axisBottom(contextXScale)
+        .tickSize(contextHeight)
+        .tickPadding(10);
+
+      var contextArea = d3.area()
+        .x(function(d) {
+          return contextXScale(d.time);
+        })
+        .y0(contextHeight)
+        .y1(0)
+        .curve(d3.curveLinear);
+
+      var brush = d3.brushX()
+        .extent([
+          [contextXScale.range()[0], 0],
+          [contextXScale.range()[1], contextHeight]
+        ])
+        .on("brush", onBrush);
+
+      let context = svgcontext.append("g")
+        .attr("class", "context")
+        .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
+
+      context.append("g")
+        .attr("class", "x axis top")
+        .attr("transform", "translate(0,0)")
+        .call(contextAxis)
+
+      context.append("g")
+        .attr("class", "x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("y", 0)
+        .attr("height", contextHeight);
+
+      context.append("text")
+        .attr("class", "instructions")
+        .attr("transform", "translate(0," + (contextHeight + 40) + ")")
+        .text('Click and drag above to zoom / pan the data');
+
+              // Brush handler. Get time-range from a brush and pass it to the charts. 
+      function onBrush() {
+        var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+
+        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
+        
+      }
+    
       const stack = d3.stack().offset(d3.stackOffsetWiggle)
       const xValue = d => d.time
       const xScale = d3.scaleLinear()
@@ -84,10 +142,18 @@
         .curve(d3.curveBasis)
       
       const render = (data) => {
+
+      d3.select(".svgchart").remove();
+
+      var svg = d3.select("body").insert("svg",":first-child")
+        .attr("class","svgchart")
+        .attr("width", outerWidth)
+        .attr("height", outerHeight)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
         data.splice(0,1);
-        // console.log(data)
-        // console.log(stack);
-        // console.log(stack.keys(data.keys))
         stack.keys(data.keys)
         colorScale.domain(data.keys)
         delete data.keys;
@@ -98,7 +164,7 @@
           .domain(d3.extent(data, d => d.time))
           .range([0, width]);
 
-        
+
         yScale
           .domain([
             d3.min(stacked[0], d => d[0]),
@@ -139,11 +205,11 @@
             .text("Season");
       }
       
-      const renderGeneratedData = () => {
-        render(generateData(color_names));
+      const renderGeneratedData = (n1,n2) => {
+        render(generateData(color_names,n1,n2));
       }
       
-      renderGeneratedData();
+      renderGeneratedData(0,31);
 
     });
       
