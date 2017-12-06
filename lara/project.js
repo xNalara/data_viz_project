@@ -4,7 +4,6 @@ function isScrolledIntoView(el) {
     var elemBottom = rect.bottom;
 	const headerOffset = 40;
 	var headerBottom = document.getElementById('header').getBoundingClientRect().bottom + headerOffset;
-	console.log(headerBottom);
     // Partially visible elements return true:
     isVisible = elemTop < window.innerHeight && elemBottom > headerBottom && elemBottom >= 0;
     return isVisible;
