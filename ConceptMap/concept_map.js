@@ -1,52 +1,49 @@
-function loadJSON(callback) {   
+let columns = ["Apple Frame", "Aurora Borealis", "Barn", "Beach", "Boat", "Bridge", "Building", "Bushes", "Cabin", "Cactus", "Circle Frame", "Cirrus", "Cliff", "Clouds", "Conifer", "Cumulus", "Deciduous", "Dock", "Double Oval Frame", "Farm", "Fence", "Fire", "Florida Frame", "Flowers", "Fog", "Framed", "Grass", "Guest", "Half Circle Frame", "Half Oval Frame", "Hills", "Lake", "Lighthouse", "Mill", "Moon", "Mountain", "Mountains", "Night", "Ocean", "Oval Frame", "Palm Trees", "Path", "Person", "Portrait", "Rectangle 3D Frame", "Rectangular Frame", "River", "Rocks", "Seashell Frame", "Snow", "Snowy Mountain", "Split Frame", "Steve Ross", "Structure", "Sun", "Tomb Frame", "Tree", "Trees", "Triple Frame", "Waterfall", "Waves", "Windmill", "Window Frame", "Winter", "Wood Framed"];
+obj = [];
+d3.csv("elements-by-episode_new.csv", function(csvdata) {
+    i = 0;
+
+    csvdata.forEach(function(episode){
+        var newElem = [];
+        //console.log(episode.TITLE);
+        cols = [];
+
+       // add list of elements appearing
+        for(j = 0; j < columns.length; j++)  {
+            var col = columns[j];
+            if(episode[col] == 1){
+                cols.push(col);
+            }
+        }    
     
-        var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType("application/json");
-        xobj.open('GET', 'elements_by_episode.json', true); // Replace 'my_data' with the path to your file
-        xobj.onreadystatechange = function () {
-              if (xobj.readyState == 4 && xobj.status == "200") {
-                callback(xobj.responseText);
-              }
-        };
-        xobj.send(null);  
-     }
-    
-    
-    // loadJSON( function(response) {
-    //     podaci = JSON.parse(response);
-    //     console.log("Data here! ", podaci.length);
-    // });
-    
-    //var data = [[120, ["like", "call response", "dramatic intro", "has breaks", "male vocalist", "silly", "swing"]], [150, ["brassy", "like", "calm energy", "female vocalist", "swing", "fun"]], [170, ["calm energy", "instrumental", "swing", "like", "happy"]], [140, ["has breaks", "male vocalist", "swing", "piano", "banjo", "chill"]], [160, ["calm energy", "instrumental", "swing", "like", "interesting"]], [140, ["brassy", "like", "energy", "dramatic intro", "male vocalist", "baseball", "swing"]], [170, ["instrumental", "interesting", "high energy", "like", "swing"]], [140, ["instrumental", "energy", "like", "swing"]], [200, ["instrumental", "brassy", "dramatic intro", "like", "swing"]], [160, ["male vocalist", "brassy", "swing", "like", "my favorites"]], [130, ["like", "interesting", "dramatic intro", "male vocalist", "silly", "swing", "gospel"]], [160, ["like", "long intro", "announcer", "energy", "swing", "female vocalist"]], [170, ["instrumental", "swing", "bass", "like"]], [150, ["like", "interesting", "has breaks", "instrumental", "chunky", "swing", "banjo", "trumpet"]], [170, ["like", "has breaks", "male vocalist", "silly", "swing", "banjo"]], [190, ["instrumental", "banjo", "swing"]], [130, ["instrumental", "brassy", "banjo", "like", "swing"]], [160, ["brassy", "like", "energy", "instrumental", "big band", "jam", "swing"]], [150, ["like", "male vocalist", "live", "swing", "piano", "banjo", "chill"]], [150, ["like", "trick ending", "instrumental", "chunky", "swing", "chill"]], [120, ["brassy", "like", "female vocalist", "swing", "chill", "energy buildup"]], [150, ["brassy", "like", "interesting", "instrumental", "swing", "piano"]], [190, ["brassy", "like", "long intro", "energy", "baseball", "swing", "female vocalist"]], [180, ["calm energy", "female vocalist", "live", "like", "swing"]], [200, ["banjo", "like", "long intro", "interesting", "energy", "my favorites", "male vocalist", "silly", "swing", "fun", "balboa"]], [150, ["brassy", "calm energy", "chunky", "instrumental", "old-timey", "live", "swing"]], [160, ["like", "call response", "interesting", "instrumental", "calm energy", "swing"]], [180, ["interesting", "swing", "fast", "male vocalist"]], [150, ["calm energy", "chunky", "swing", "female vocalist", "like"]], [180, ["like", "has breaks", "male vocalist", "chunky", "silly", "swing"]], [140, ["instrumental", "brassy", "dramatic intro", "swing", "chill"]], [150, ["male vocalist", "trumpet", "like", "swing"]], [150, ["instrumental", "energy", "like", "has breaks", "swing"]], [180, ["brassy", "like", "energy", "has breaks", "instrumental", "has calm", "swing"]], [150, ["female vocalist", "swing"]], [170, ["instrumental", "brassy", "energy", "swing"]], [170, ["calm energy", "instrumental", "energy", "like", "swing"]], [190, ["brassy", "like", "instrumental", "high energy", "swing", "trumpet"]], [160, ["male vocalist", "energy", "swing", "old-timey"]], [170, ["like", "oldies", "my favorites", "fast", "male vocalist", "high energy", "swing"]]];
-    var data = [["a walk in the woods", ['bushes', 'deciduous', 'grass', 'river', 'tree', 'trees']], ["mt. mckinley", ['cabin', 'clouds', 'conifer', 'mountain', 'snow', 'snowy_mountain', 'tree', 'trees', 'winter']], ["ebony sunset", ['cabin', 'conifer', 'fence', 'mountain', 'mountains', 'structure', 'sun', 'tree', 'trees', 'winter']]];
-    var s01e4 = [ "winter mist", ['bushes', 'clouds', 'conifer', 'lake', 'mountain', 'snowy_mountain', 'tree', 'trees']]
-    var s01e5 = ["quiet stream" ,  ['deciduous', 'river', 'rocks', 'tree', 'trees']];
-    var s01e6 = ["winter moon", ['cabin', 'conifer', 'lake', 'moon', 'mountain', 'mountains', 'night', 'snow', 'snowy_mountain', 'structure', 'tree', 'trees', 'winter']];
-    var s01e7 = ["autumn mountains", ['deciduous', 'lake', 'mountain', 'mountains', 'snowy_mountain', 'tree', 'trees']];
-    var s01e8 = ["peaceful valley", ['bushes', 'conifer', 'lake', 'mountain', 'mountains', 'tree', 'trees']];
-    var s01e9 = ["seascape", ['beach', 'clouds', 'fence', 'ocean']];
-    var s01e10 = [ "mountain lake", ['bushes', 'conifer', 'deciduous', 'lake', 'mountain', 'tree', 'trees']];
-    var s01e11 = ["winter glow", ['deciduous', 'lake', 'tree', 'trees']];
-    var s01e12 = ["snowfall", ['cirrus', 'clouds', 'conifer', 'lake', 'mountain', 'mountains', 'snowy_mountain', 'tree', 'trees']];
-    var s01e13 = [ "final reflections", ['bushes', 'conifer', 'deciduous', 'grass', 'mountain', 'snowy_mountain', 'tree', 'trees']];
-    
-    data.push(s01e4);
-    data.push(s01e5);
-    data.push(s01e6);
-    data.push(s01e7);
-    data.push(s01e8);
-    data.push(s01e9);
-    data.push(s01e10);
-    data.push(s01e11);
-    data.push(s01e12);
-    data.push(s01e13);
-    
+        //add season and episode
+
+        newElem.push(episode.TITLE);
+        newElem.push(cols);
+        newElem.push(episode.EPISODE);
+        newElem.push(episode.SEASON);
+        obj.push(newElem);
+        i +=1;
+    });
+
+    console.log("DATA: ");
+    console.log(obj); 
+    filterData = [];
+    filterData.push(obj[0]);
+    filterData.push(obj[1]);
+    filterData.push(obj[2]);
+    filterData.push(obj[3]);
+    filterData.push(obj[4]);
+    data = filterData;
+    console.log(data);
+
+
     var outer = d3.map();
     var inner = [];
     var links = [];
     
     var outerId = [0];
-    
+ 
     data.forEach(function(d){
         
         if (d == null)
@@ -106,7 +103,7 @@ function loadJSON(callback) {
             data.outer[i1++] = outer[i];
     }
     
-    console.log(data.outer.reduce(function(a,b) { return a + b.related_links.length; }, 0) / data.outer.length);
+    //console.log(data.outer.reduce(function(a,b) { return a + b.related_links.length; }, 0) / data.outer.length);
     
     
     // from d3 colorbrewer: 
@@ -118,7 +115,7 @@ function loadJSON(callback) {
         .clamp(true);
     
     //var color = "#00BFFF"; // deep sky blue
-    var diameter = 960;
+    var diameter = 900;
     var rect_width = 120;
     var rect_height = 18;
     
@@ -305,4 +302,5 @@ function loadJSON(callback) {
             d3.select('#' + d.related_links[i]).attr("stroke","gray");
         }
     }
+}); 
     
