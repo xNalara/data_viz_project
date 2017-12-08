@@ -34,8 +34,17 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
     filterData.push(obj[2]);
     filterData.push(obj[3]);
     filterData.push(obj[4]);
+    filterData.push(obj[5]);
+    filterData.push(obj[6], obj[7], obj[8], obj[9], obj[10]);
+
     data = filterData;
     console.log(data);
+
+
+    function filterDataElements(){
+        console.log("Brush brush..");
+    };
+
 
 
     var outer = d3.map();
@@ -302,5 +311,87 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
             d3.select('#' + d.related_links[i]).attr("stroke","gray");
         }
     }
+
+
+
+    /// BRUSH
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    padding = {top: 20, right: 60, bottom: 60, left: 60},
+    outerWidth = 1400,
+    outerHeight = 1200,
+    innerWidth = outerWidth - margin.left - margin.right,
+    innerHeight = outerHeight - margin.top - margin.bottom,
+    width = innerWidth - padding.left - padding.right,
+    height = innerHeight - padding.top - padding.bottom;
+    const contextHeight = 50;
+    const contextWidth = width;
+
+
+    const xScaleGeneral=d3.scaleLinear()
+        .domain([0,31])
+        .range([0, width]);
+
+    var contextXScale = d3.scaleLinear()
+        .range([0, width])
+        .domain(xScaleGeneral.domain());
+
+    var contextAxis = d3.axisBottom(contextXScale)
+        .tickSize(contextHeight)
+        .tickPadding(10);
+
+    var contextArea = d3.area()
+        .x(function(d) {
+            return contextXScale(d.time);
+        })
+        .y0(contextHeight)
+        .y1(0)
+        .curve(d3.curveLinear);
+
+    var brush = d3.brushX()
+        .extent([
+            [contextXScale.range()[0], 0],
+            [contextXScale.range()[1], contextHeight]
+        ])
+        .on("brush", onBrush);
+
+    let context = svg.append("g")
+        .attr("class", "context")
+        .attr("transform", "translate(" + -400  + "," + (350) + ")");
+
+    context.append("g")
+        .attr("class", "x axis top")
+        .attr("transform", "translate(0,0)")
+        .call(contextAxis)
+
+    context.append("g")
+        .attr("class", "x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("y", 0)
+        .attr("height", contextHeight);
+
+    context.append("text")
+        .attr("class", "instructions")
+        .attr("transform", "translate(0," + (contextHeight + 40) + ")")
+        .text('Click and drag above to zoom / pan the data');
+            // Brush handler. Get time-range from a brush and pass it to the charts. 
+    
+    function onBrush() {
+        console.log(" You changed the brush filter!!! ");
+        var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+        minChosen = Math.ceil(b[0])
+        maxChosen = Math.floor(b[1])
+        console.log("Chosen min and max: ", minChosen, " , ", maxChosen);
+        console.log("Filter data now...");
+        data = [];
+        
+        // renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
+    
+    }
+
+
+
+
+
 }); 
     
