@@ -9,13 +9,22 @@ function isScrolledIntoView(el) {
     return isVisible;
 }
 
+/* function dynamicHeight(){
+	var chord = document.getElementById("chord");
+	var h = chord.width;
+	chord.attr("height", h);
+} */
 /* control behavior of subheadings when scrolling */
-window.onload = function() {scrollControl(); colorstream()}
-window.onresize = function(){colorstream()}
+window.onload = function() {
+	scrollControl(); 
+	chord(); 
+	colorstream()}
+window.onresize = function(){
+	chord(); 
+	colorstream();}
 
 scrollControl = function(){
 	window.onscroll = function(){	
-		console.log("onscroll");
 		var subheadings = document.getElementsByClassName('subheading');
 		for (var i = 0; i < subheadings.length; i++){
 			if (subheadings[i].textContent == "Paintings") {
@@ -65,7 +74,6 @@ scrollControl = function(){
 			}
 		}
 	};}
-
 	
 colorstream = function(){	
 	var rect = document.getElementById('colorstream').getBoundingClientRect();
@@ -114,10 +122,10 @@ var innerWidth = outerWidth - margin.left - margin.right,
       const width = innerWidth
       const height = innerHeight
 
-	  d3.select("#colorstream").select(".svgcontext").remove();
+	  d3.select("#colorstream").select(".colorstreamSvgcontext").remove();
 	  
       var svgcontext = d3.select("#colorstream").append('svg')
-        .attr("class","svgcontext")
+        .attr("class","colorstreamSvgcontext")
         .attr("width", outerWidth)
         .attr("height", contextHeightTotal)
 		.append("g")
@@ -194,10 +202,10 @@ var innerWidth = outerWidth - margin.left - margin.right,
       
       const render = (data) => {
 
-      d3.select(".svgchart").remove();
+      d3.select(".colorstreamSvgchart").remove();
 
       var svg = d3.select("#colorstream").insert("svg",":first-child")
-        .attr("class","svgchart")
+        .attr("class","colorstreamSvgchart")
         .attr("width", outerWidth)
         .attr("height", outerHeight)
       .append("g")
@@ -264,4 +272,192 @@ var innerWidth = outerWidth - margin.left - margin.right,
 
 	});
 }
+
+
+chord = function(){
+	var rect = document.getElementById('chord').getBoundingClientRect();
+	const contextHeight = 50;
+	const contextTextHeight = 40;
+	const contextHeightTotal = contextHeight + contextTextHeight;
+    const contextWidth = width;
+	var margin = {top: 20, right: 20, bottom: 20, left: 20},
+	padding = {top: 20, right: 60, bottom: 60, left: 60},
+    outerWidth = rect.width,
+    outerHeight = rect.height,
+	innerWidth = outerWidth - margin.left - margin.right,
+	innerHeight = outerHeight - margin.top - margin.bottom,
+	width = innerWidth - padding.left - padding.right,
+	height = innerHeight - padding.top - padding.bottom;
+	var textPlaceholder = 60;
+
+
+d3.csv("bobrosscategorized.csv", function(csvdata) { 
+
+  let columns = [ "LANDSCAPES","FRAMES", "STRUCTURES", "PLANTS", "GUESTS", "WEATHER", "HUMANS"];
+
+  const generateData = (columns, n1,n2) =>{
+    //console.log(n1,n2)
+
+    var data = new Array(columns.length*(columns.length-1));
+    for (var i = 0; i < columns.length*(columns.length-1); i++) {
+      data[i] = new Array(3);
+    }
+    //console.log(data)
+    for (var i = 0; i < columns.length; i++) {
+      //console.log(i)
+      var realindex = 0;
+      for (var j = 0; j < (columns.length); j++) {
+        //console.log(j)
+        if (i!=j){
+          data[(columns.length-1)*i+realindex][0] = columns[i];
+          data[(columns.length-1)*i+realindex][1] = columns[realindex];
+          data[(columns.length-1)*i+realindex][2] = 0.0;
+          realindex += 1;
+        } 
+        
+      }
+    }
+    //console.log(data)
+    csvdata.filter(element=>(element['SEASON']>=n1)&&(element['SEASON']<=n2)).forEach(function(painting) {
+      for (var i = 0; i < columns.length; i++) {
+        //console.log(painting[columns[i]])
+        if (painting[columns[i]]==1){
+          var realindex = 0;
+          for (var j = 0; j < (columns.length); j++) {
+            if (i!=j){
+              if (painting[columns[realindex]]==1){
+                data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
+              }
+            } 
+            realindex += 1;
+          }
+        }
+      }
+    })
+    return data
+  };
+
+      const width = innerWidth
+      const height = innerHeight
+
+	  d3.select("#chord").select(".chordSvgcontext").remove();
+	  
+      var svgcontext = d3.select("#chord").append('svg')
+        .attr("class","chordSvgcontext")
+        .attr("width", outerWidth)
+        .attr("height", contextHeightTotal)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+      // Create a context for a brush
+      const xScaleGeneral=d3.scaleLinear()
+          .domain([0,31])
+          .range([0, width]);
+      var contextXScale = d3.scaleLinear()
+        .range([0, width])
+        .domain(xScaleGeneral.domain());
+
+      var contextAxis = d3.axisBottom(contextXScale)
+        .tickSize(contextHeight)
+        .tickPadding(10);
+
+      var contextArea = d3.area()
+        .x(function(d) {
+          return contextXScale(d.time);
+        })
+        .y0(contextHeight)
+        .y1(0)
+        .curve(d3.curveLinear);
+
+      var brush = d3.brushX()
+        .extent([
+          [contextXScale.range()[0], 0],
+          [contextXScale.range()[1], contextHeight]
+        ])
+        .on("brush", onBrush);
+
+      let context = svgcontext.append("g")
+        .attr("class", "context")
+        .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
+
+      context.append("g")
+        .attr("class", "x axis top")
+        .attr("transform", "translate(0,0)")
+        .call(contextAxis)
+
+      context.append("g")
+        .attr("class", "x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("y", 0)
+        .attr("height", contextHeight);
+
+      context.append("text")
+        .attr("class", "instructions")
+        .attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
+        .text('Click and drag above to zoom / pan the data');
+
+              // Brush handler. Get time-range from a brush and pass it to the charts. 
+      function onBrush() {
+        var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+
+        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
+        
+      }
+
+
+  const render = (data) => {
+
+  	var size = 0;
+  	if (width-2*textPlaceholder < height){
+		size = (width/2) - 2*textPlaceholder;
+	}
+	else {
+		size = (height/2) - textPlaceholder;
+	}
+	
+    d3.select(".chordSvgchart").remove();
+    var svg = d3.select("#chord").insert("svg",":first-child")
+        .attr("class","chordSvgchart")
+        .attr("width", outerWidth) //outerWidth
+        .attr("height", outerHeight-contextHeightTotal); //outerHeight
+	
+    var colors = {"FRAMES" : "#000000","STRUCTURES" : "#776f6f","PLANTS" : "#399661","LANDSCAPES" : "#55b247","WEATHER" : "#7cccff","GUESTS" : "#130ea0","HUMANS" : "#ffeec9"};
+
+    var sortOrder =columns
+
+    function sort(a,b){ return d3.ascending(sortOrder.indexOf(a),sortOrder.indexOf(b)); }
+		
+    var ch = viz.ch().data(data)
+        .padding(.01)
+        .sort(sort)
+        .innerRadius(size-20) //430
+        .outerRadius(size) //450
+        .duration(1000)
+        .chordOpacity(0.3)
+        .labelPadding(.03)
+        .fill(function(d){ return colors[d];});
+
+    //var width=1200, height=1100;
+
+	var xTranslation = 0;
+	if (width-2*textPlaceholder < height){
+		xTranslation = ((outerWidth/2));
+	}
+	else {
+		xTranslation = ((outerWidth/2));
+	}
+
+	svg.append("g").attr("transform", "translate("+ xTranslation + "," + ((height/2)-20) + ")").call(ch); //600, 480
+    // adjust height of frame in bl.ocks.org
+    d3.select(self.frameElement).style("height", height).style("width", width);
+  }
+
+  const renderGeneratedData = (n1,n2) => {
+        render(generateData(columns,n1,n2));
+      }
+      
+  renderGeneratedData(0,31);   
+});}
 
