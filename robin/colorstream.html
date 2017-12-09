@@ -41,7 +41,7 @@
       const generateData = (keys,n1,n2) => {
 
         const data = d3.range(n2-n1+2).map((d, i) => {
-          console.log(n1+i-1)
+          //console.log(n1+i-1)
           const row = {"ALIZARIN_CRIMSON" :0 , "BLACK_GESSO":0 , "BRIGHT_RED":0 , "BURNT_UMBER":0 , "CADMIUM_YELLOW":0 ,"MIDNIGHT_BLACK":0, "PHTHALO_GREEN":0, "DARK_SIENNA":0 , "INDIAN_RED":0 , "INDIAN_YELLOW":0 , "LIQUID_BLACK":0 , "LIQUID_CLEAR":0 , "PHTHALO_BLUE":0 , "PRUSSIAN_BLUE":0 , "SAP_GREEN":0 , "TITANIUM_WHITE":0 , "VAN_DYKE_BROWN":0 , "YELLOW_OCHRE":0 };
           row["time"]= n1+i-1;
           
@@ -97,7 +97,7 @@
           [contextXScale.range()[0], 0],
           [contextXScale.range()[1], contextHeight]
         ])
-        .on("brush", onBrush);
+        .on("brush end", onBrush);
 
       let context = svgcontext.append("g")
         .attr("class", "context")
@@ -123,8 +123,12 @@
               // Brush handler. Get time-range from a brush and pass it to the charts. 
       function onBrush() {
         var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-
-        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
+        a=Math.ceil(b[0])
+        c=Math.floor(b[1])
+        console.log(a)
+        console.log(c)
+        if (c-a<1) {c=a+1;}
+        renderGeneratedData(a,c);
         
       }
     
