@@ -94,7 +94,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	// Generate context element
 	{d3.select("#barChart").select(".barChartSvgcontext").remove();
 	  
-    var svgcontext = d3.select("#barChart").append('svg')
+    var svgcontext = d3.select("#barChartContext").append('svg')
 		.attr("class","barChartSvgcontext")
 		.attr("width", outerWidth)
 		.attr("height", contextHeightTotal)
@@ -150,11 +150,20 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
         .text('Click and drag above to zoom / pan the data');
 	}
 	
+	var brushLowerBound = 0;
+	var brushUpperBound = 31; 
+	
 	// Brush handler. Get time-range from a brush and pass it to the charts. 
     function onBrush() {
 		var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));      
+        brushLowerBound = Math.ceil(b[0]);
+		brushUpperBound = Math.floor(b[1]);
+		renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));      
     }
+	
+	var currentCategory;
+	var currentD;
+	var currentI;
 	
 	// render data
 	const render = (data) => {
@@ -162,46 +171,30 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	var categories = data[0];
 	var subcategories = data[1];
 	
+
 	
 	//matches category and returns color value for this category
 	function getColor(d, i) {
-		for (var k = 0; k < categoryColors[0].length; k++){
-			if (categories[0][i] == categoryColors[0][k]){
-				return categoryColors[1][k]}}}
+		if(currentI == null){
+			for (var k = 0; k < categoryColors[0].length; k++){
+				if (categories[0][i] == categoryColors[0][k]){
+					return categoryColors[1][k]}}}
+		else {
+			if (currentI == i){
+				return categoryColors[1][i]}
+			else {return unselectedColor;}
+		}}
 	
-	
-	//d3.select("#overallChart").remove();
-		
- 	var x = d3.scaleLinear()
-		.domain([0, d3.max(categories[1])])
-		.range([0, width-textPlaceholderRight]); 
-
-	d3.select("#overallChart").selectAll("#overallChartGraph").remove();
-	var overallChart = d3.select("#overallChart").insert("svg",":first-child")
-		.attr("width", width)
-		.attr("height", barHeight * categories[1].length)
-		.attr("id", "overallChartGraph");
-
-	var bar = overallChart.selectAll("g")
-		.data(categories[1])
-		.enter().append("g")
-		.attr("transform", function(d, i) { return "translate(" + textPlaceholderLeft + "," + i * barHeight + ")"; });
-
-	bar.append("rect")
-		.attr("height", barHeight - 1)
-		.attr("width", 0)
-		.transition()
-		.duration(500)
-		.attr("width", x);
-		
-	
-	bar.attr("fill", function (d, i) {return getColor(d, i)}) 
-		.on('mouseover', function(d, i) {
-			bar.attr("fill", unselectedColor);
-			d3.select(this).attr("fill", function (d, j) {return getColor(d, i)})
+	function updateDetailedChart() {
+		if (currentCategory == null){
+			return;
+		} 
+		else{		
+			d = currentD;
+			i = currentI;
 			
 			var barHeight2 = ((barHeight * categories[0].length) / (subcategories[i][0].length));
- 			var y = d3.scaleLinear()
+			var y = d3.scaleLinear()
 			.domain([0, d3.max(subcategories[i][1])])
 			.range([0, width-textPlaceholderRight]);  
 			
@@ -217,18 +210,12 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 			.attr("transform", function(d, i) { return "translate(" + textPlaceholderLeft + "," + i * barHeight2 + ")"; });
 			
 			bar2.append("rect")
-			.attr("width", 0)
-			.transition()
-			.duration(500)
 			.attr("width", y)
 			.attr("height", barHeight2 - 1);
 			
 			bar2.attr("fill", function (d, j) {return getColor(d, i)}); 
 			
 			bar2.append("text")
-			.attr("x", 5)
-			.transition()
-			.duration(500)
 			.attr("x", function(d, j) { return y(subcategories[i][1][j]) + 5; })
 			.attr("y", barHeight2 / 2)
 			.attr("dy", ".35em")
@@ -246,16 +233,52 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 			var barEnter = barUpdate.enter().append("div")
 			barEnter.style("width", function(d) {return y(d) + "px";})
 				.text(function(d) {return d;})
-			})
-		.on('mouseout', function() {
+		}
+	}
+	//d3.select("#overallChart").remove();
+	console.log("i:"+currentI)
+	
+ 	var x = d3.scaleLinear()
+		.domain([0, d3.max(categories[1])])
+		.range([0, width-textPlaceholderRight]); 
+
+	d3.select("#overallChart").selectAll("#overallChartGraph").remove();
+	var overallChart = d3.select("#overallChart").insert("svg",":first-child")
+		.attr("width", width)
+		.attr("height", barHeight * categories[1].length)
+		.attr("id", "overallChartGraph");
+
+	var bar = overallChart.selectAll("g")
+		.data(categories[1])
+		.enter().append("g")
+		.attr("transform", function(d, i) { return "translate(" + textPlaceholderLeft + "," + i * barHeight + ")"; });
+
+	bar.append("rect")
+		.attr("height", barHeight - 1)
+		.attr("width", x);
+		
+	////////////HERE////////////////////////////
+	bar.attr("fill", function (d, i) {return getColor(d, i)}) 
+		.on('mouseover', function(d, i) {
+			if (currentI == i){
+				console.log("hello");
+				currentI = null;
+				renderGeneratedData(brushLowerBound, brushUpperBound);
+				d3.select("#detailedChart").selectAll("g").remove();
+				return;
+			}
+			currentCategory = d3.select(this); 
+			currentD = d;
+			currentI = i;
+			bar.attr("fill", unselectedColor);
+			currentCategory.attr("fill", function (d, j) {return getColor(d, i)})
+			updateDetailedChart()});
+		/*.on('click', function() {
 			bar.attr("fill", function (d, i) {return getColor(d, i)})
 			d3.select("#detailedChart").selectAll("g").remove();
-			});
+			});*/
 
 	bar.append("text")
-		.attr("x", 5)
-		.transition()
-		.duration(500)
 		.attr("x", function(d) { return x(d) + 5; })
 		.attr("y", barHeight / 2)
 		.attr("dy", ".35em")
@@ -272,13 +295,16 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	var barUpdate = bar.data(categories[1]);
 	var barEnter = barUpdate.enter().append("div")
 	barEnter.style("width", function(d) {return x(d) + "px";})
-			.text(function(d) {return d;})
-			
+			.text(function(d) {return d;})	
+	
+	if (currentI != null){updateDetailedChart()};
 	}
 	
 	const renderGeneratedData = (n1,n2) => {
 		render(generateData(columns,n1,n2));
     }
+	
+	renderGeneratedData(0,31);
 })
 }); 
 
