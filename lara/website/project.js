@@ -92,7 +92,7 @@ var innerWidth = outerWidth - margin.left - margin.right,
 
 
     d3.csv("bobrossjoined.csv", function(dd) { 
-      const color_names = ["ALIZARIN_CRIMSON", "BLACK_GESSO", "BRIGHT_RED", "BURNT_UMBER", "CADMIUM_YELLOW", "DARK_SIENNA", "INDIAN_RED", "INDIAN_YELLOW", "LIQUID_BLACK", "LIQUID_CLEAR", "MIDNIGHT_BLACK","PHTHALO_BLUE", "PHTHALO_GREEN", "PRUSSIAN_BLUE", "SAP_GREEN", "TITANIUM_WHITE", "VAN_DYKE_BROWN", "YELLOW_OCHRE"];
+      const color_names = ["Alizarin Crismon","Black Gesso","Bright Red","Burnt Amber","Cadmium Yellow","Dark Sienna","Indian Red","Indian Yellow","Liquid Black","Liquid Clear","Midnight Black","Phthalo Blue","Phthalo Green","Prussian Blue","Sap Green","Titanium White","Van Dyke Brown","Yellow Ochre"];
       //, "MIDNIGHT_BLACK", "PHTHALO_GREEN"
       const hexadec = ["#4E1500", "#000000", "#DB0000", "#8A3324", "#FFEC00", "#5F2E1F", "#CD5C5C", "#FFB800", "#000000", "#C0C2C4",  "#000000", "#0C0040", "#102E3C","#021E44","#0A3410", "#FFFFFF", "#221B15", "#C79B00"];
 
@@ -100,7 +100,7 @@ var innerWidth = outerWidth - margin.left - margin.right,
 
         const data = d3.range(n2-n1+2).map((d, i) => {
           //console.log(n1+i-1)
-          const row = {"ALIZARIN_CRIMSON" :0 , "BLACK_GESSO":0 , "BRIGHT_RED":0 , "BURNT_UMBER":0 , "CADMIUM_YELLOW":0 ,"MIDNIGHT_BLACK":0, "PHTHALO_GREEN":0, "DARK_SIENNA":0 , "INDIAN_RED":0 , "INDIAN_YELLOW":0 , "LIQUID_BLACK":0 , "LIQUID_CLEAR":0 , "PHTHALO_BLUE":0 , "PRUSSIAN_BLUE":0 , "SAP_GREEN":0 , "TITANIUM_WHITE":0 , "VAN_DYKE_BROWN":0 , "YELLOW_OCHRE":0 };
+          const row = {"Alizarin Crismon" : 0,"Black Gesso" : 0,"Bright Red" : 0,"Burnt Amber" : 0,"Cadmium Yellow" : 0,"Dark Sienna" : 0,"Indian Red" : 0,"Indian Yellow" : 0,"Liquid Black" : 0,"Liquid Clear" : 0,"Midnight Black" : 0,"Phthalo Blue" : 0,"Phthalo Green" : 0,"Prussian Blue" : 0,"Sap Green" : 0,"Titanium White" : 0,"Van Dyke Brown" : 0,"Yellow Ochre" : 0};
           row["time"]= n1+i-1;
           
           dd.filter(element => element['SEASON']==n1+i-1).
@@ -156,7 +156,7 @@ var innerWidth = outerWidth - margin.left - margin.right,
           [contextXScale.range()[0], 0],
           [contextXScale.range()[1], contextHeight]
         ])
-        .on("brush", onBrush);
+        .on("brush end", onBrush);
 
       let context = svgcontext.append("g")
         .attr("class", "context")
@@ -182,8 +182,11 @@ var innerWidth = outerWidth - margin.left - margin.right,
               // Brush handler. Get time-range from a brush and pass it to the charts. 
       function onBrush() {
         var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+        a=Math.ceil(b[0])
+        c=Math.floor(b[1])
+        if (c-a<1) {c=a+1;}
+        renderGeneratedData(a,c);
 
-        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
         
       }
     
@@ -293,7 +296,7 @@ chord = function(){
 
 d3.csv("bobrosscategorized.csv", function(csvdata) { 
 
-  let columns = [ "LANDSCAPES","FRAMES", "STRUCTURES", "PLANTS", "GUESTS", "WEATHER", "HUMANS"];
+  let columns = [ "Landscapes","Frames", "Structures", "Plants", "Guests", "Weather", "Humans"];
 
   const generateData = (columns, n1,n2) =>{
     //console.log(n1,n2)
@@ -375,7 +378,7 @@ d3.csv("bobrosscategorized.csv", function(csvdata) {
           [contextXScale.range()[0], 0],
           [contextXScale.range()[1], contextHeight]
         ])
-        .on("brush", onBrush);
+        .on("brush end", onBrush);
 
       let context = svgcontext.append("g")
         .attr("class", "context")
@@ -401,8 +404,10 @@ d3.csv("bobrosscategorized.csv", function(csvdata) {
               // Brush handler. Get time-range from a brush and pass it to the charts. 
       function onBrush() {
         var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-
-        renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));
+        a=Math.ceil(b[0])
+        c=Math.floor(b[1])
+        if (c-a<1) {c=a+1;}
+        renderGeneratedData(a,c);
         
       }
 
@@ -423,7 +428,7 @@ d3.csv("bobrosscategorized.csv", function(csvdata) {
         .attr("width", outerWidth) //outerWidth
         .attr("height", outerHeight-contextHeightTotal); //outerHeight
 	
-    var colors = {"FRAMES" : "#000000","STRUCTURES" : "#776f6f","PLANTS" : "#399661","LANDSCAPES" : "#55b247","WEATHER" : "#7cccff","GUESTS" : "#130ea0","HUMANS" : "#ffeec9"};
+    var colors = {"Frames" : "#000000","Structures" : "#776f6f","Plants" : "#399661","Landscapes" : "#55b247","Weather" : "#7cccff","Guests" : "#130ea0","Humans" : "#ffeec9"};
 
     var sortOrder =columns
 
