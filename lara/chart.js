@@ -164,6 +164,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	var currentCategory;
 	var currentD;
 	var currentI;
+	var clickedI = null;
 	
 	// render data
 	const render = (data) => {
@@ -260,23 +261,43 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	////////////HERE////////////////////////////
 	bar.attr("fill", function (d, i) {return getColor(d, i)}) 
 		.on('mouseover', function(d, i) {
-			if (currentI == i){
-				console.log("hello");
-				currentI = null;
-				renderGeneratedData(brushLowerBound, brushUpperBound);
-				d3.select("#detailedChart").selectAll("g").remove();
-				return;
+			if(clickedI == null){ // mouseover mode
+				if (currentI == i){
+					console.log("hello");
+					currentI = null;
+					renderGeneratedData(brushLowerBound, brushUpperBound);
+					d3.select("#detailedChart").selectAll("g").remove();
+					return;
+				}
+				currentCategory = d3.select(this); 
+				currentD = d;
+				currentI = i;
+				bar.attr("fill", unselectedColor);
+				currentCategory.attr("fill", function (d, j) {return getColor(d, i)})
+				updateDetailedChart();
 			}
-			currentCategory = d3.select(this); 
-			currentD = d;
-			currentI = i;
-			bar.attr("fill", unselectedColor);
-			currentCategory.attr("fill", function (d, j) {return getColor(d, i)})
-			updateDetailedChart()});
-		/*.on('click', function() {
-			bar.attr("fill", function (d, i) {return getColor(d, i)})
-			d3.select("#detailedChart").selectAll("g").remove();
-			});*/
+			})
+		.on('click', function(d, i) {
+			if(clickedI == null){ // set clickedI -> no mouseover anymore
+				clickedI = i;
+			} else if (clickedI == i){ // switch to mouseover mode
+				clickedI = null;
+			} else { // select new clickedI (change category)
+				clickedI = i;
+				currentCategory = d3.select(this); 
+				currentD = d;
+				currentI = i;
+				bar.attr("fill", unselectedColor);
+				currentCategory.attr("fill", function (d, j) {return getColor(d, i)})
+				updateDetailedChart();
+			}
+			})
+		.on('mouseout', function() {
+			if (clickedI == null){
+				currentI = null;
+				bar.attr("fill", function (d, i) {return getColor(d, i)})
+				d3.select("#detailedChart").selectAll("g").remove();}
+			});
 
 	bar.append("text")
 		.attr("x", function(d) { return x(d) + 5; })
