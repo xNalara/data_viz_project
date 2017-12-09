@@ -607,7 +607,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
           [contextXScale.range()[0], 0],
           [contextXScale.range()[1], contextHeight]
         ])
-        .on("brush", onBrush);
+        .on("brush end", onBrush);
 
       let context = svgcontext.append("g")
         .attr("class", "context")
