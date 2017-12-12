@@ -636,10 +636,12 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 	
 	// Brush handler. Get time-range from a brush and pass it to the charts. 
     function onBrush() {
-		var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-        brushLowerBound = Math.ceil(b[0]);
-		brushUpperBound = Math.floor(b[1]);
-		renderGeneratedData(Math.ceil(b[0]),Math.floor(b[1]));      
+		    var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+        a=Math.ceil(b[0])
+        c=Math.floor(b[1])
+        if (c-a<1) {c=a+1;}
+        renderGeneratedData(a,c);
+         
     }
 	
 	// render data
