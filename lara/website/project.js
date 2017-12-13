@@ -468,6 +468,8 @@ var currentCategory;
 var currentD;
 var currentI;
 var clickedI = null;
+var brushLowerBound = 0;
+var brushUpperBound = 31;
 
 barChart = function(resizing) {
 var rect = document.getElementById('barChart').getBoundingClientRect();
@@ -631,17 +633,13 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
         .text('Click and drag above to zoom / pan the data');
 	
 	
-	var brushLowerBound = 0;
-	var brushUpperBound = 31; 
-	
 	// Brush handler. Get time-range from a brush and pass it to the charts. 
     function onBrush() {
 		var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
 		brushLowerBound = Math.ceil(b[0]);
 		brushUpperBound = Math.floor(b[1]);
         if (brushUpperBound-brushLowerBound<1) {brushUpperBound = brushLowerBound+1;}
-        renderGeneratedData(brushLowerBound,brushUpperBound);
-         
+        renderGeneratedData(brushLowerBound,brushUpperBound);         
     }
 	
 	// render data
@@ -801,7 +799,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 		render(generateData(columns,n1,n2));
     }
 	
-	renderGeneratedData(0,31);
+	renderGeneratedData(brushLowerBound,brushUpperBound);
 })
 }); 
 }
