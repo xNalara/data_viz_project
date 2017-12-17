@@ -252,6 +252,30 @@ If a category is clicked the mouseover is deactivated and the detailed (element)
 
 \newthought{The detailed (element) bar chart} shows the amount of the elements which belong to the chosen category for the chosen timeframe (via brush). In general, this chart is similiarly constructed as the other bar chart. The main difference is, that the bars height scales according to the amount of the elements, so that both diagrams always have the same height. This shall make them nice looking when displaying them next to each other. Moreover, they adapt their color to their category's color. \\
 
+\section{Color Evolution Streamgraph}
+
+This visualization is based on the \href{https://bl.ocks.org/veltman/14006cc042f5dff5a6e1ddf041afbae6}{Noah Veltman's block}.
+
+\newthought{As for the other visualizations,} we only have the use of each color on every painting. To represent the evolution of the color usage through the seasons, we have to sum over all the paintings of a season to have for each season 18 attributes with a color as a key and a number between 0 and 13 as value.
+The generation of this array is done everytime we use the brush to restrict the considered seasons to the brush selection. It is done with the filtering function over the season attribute of each painting. We begin by calling this function on the whole seasons since no brushing selection is done in the beginning.
+The work of Noah Veltman allow us to have a decent placement of the name of the colors even after a brush, which is very convenient
+
+\newthought{As our database does not evolve,} we could have precomputed the values and save some computing time, but with this approach it could be applied to evolving databases.
+
+\section{Link between the categories - Chord graph}
+
+This visualization is based on the \href{http://bl.ocks.org/NPashaP/ba4c802d5ef68f70c019a9706f77ebf1}{Pasha's block} and his library \href{https://github.com/NPashaP/Viz}{VizJs} .
+
+\newthought{As this diagram is more of a statistical analysis,} it requires a bit more work to generate the data structure to store the data. The data structure was quite guided by the requirements of Pasha's work but it was very convenient to generate it. First we build the matrix of the right size : $N_{categories} \times (N_{categories} - 1)$ rows of 3 columns : the first one being the first category of the link, the second the second category and the third the number of links between those two categories, intialized to 0. Then we iterate on each element of the database (once again potentially filtered on the season attribute by the brush selection) to add 1 to this third column if we detect a link between two categories.
+
+Our first will was to implement this diagram on the elements which would have been more relevant, but it was quite unreadable.
+
+With more time we would have liked to allow the user select the elements he wanted to see appearing in this diagram.
+
+For this diagram as there was already quite much computing to build the datastructure, we precomputed the apparitions of the categories by adding new columns in the database for each painting defined by = $painting[category] = max_{element \in category}(painting[element])$
+
+
+
 %%
 % The back matter contains appendices, bibliographies, indices, glossaries, etc.
 \backmatter
