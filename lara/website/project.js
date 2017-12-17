@@ -78,199 +78,197 @@ colorstream = function(){
 	const contextHeight = 50;
 	const contextTextHeight = 40;
 	const contextHeightTotal = contextHeight + contextTextHeight;
-    const contextWidth = width;
-var margin = {top: 20, right: 10, bottom: 20, left: 10},
-    padding = {top: 60, right: 60, bottom: 60, left: 60},
-    outerWidth = rect.width,
-    outerHeight = rect.height - contextHeightTotal;
-var innerWidth = outerWidth - margin.left - margin.right,
-    innerHeight = outerHeight - margin.top - margin.bottom,
-    width = innerWidth - padding.left - padding.right,
-    height = innerHeight - padding.top - padding.bottom;
+  const contextWidth = width;
+  var margin = {top: 20, right: 10, bottom: 20, left: 10},
+      padding = {top: 60, right: 60, bottom: 60, left: 60},
+      outerWidth = rect.width,
+      outerHeight = rect.height - contextHeightTotal;
+  var innerWidth = outerWidth - margin.left - margin.right,
+      innerHeight = outerHeight - margin.top - margin.bottom,
+      width = innerWidth - padding.left - padding.right,
+      height = innerHeight - padding.top - padding.bottom;
 
 
-    d3.csv("bobrossjoined.csv", function(dd) { 
-      const color_names = ["Alizarin Crismon","Black Gesso","Bright Red","Burnt Amber","Cadmium Yellow","Dark Sienna","Indian Red","Indian Yellow","Liquid Black","Liquid Clear","Midnight Black","Phthalo Blue","Phthalo Green","Prussian Blue","Sap Green","Titanium White","Van Dyke Brown","Yellow Ochre"];
-      //, "MIDNIGHT_BLACK", "PHTHALO_GREEN"
-      const hexadec = ["#4E1500", "#000000", "#DB0000", "#8A3324", "#FFEC00", "#5F2E1F", "#CD5C5C", "#FFB800", "#000000", "#C0C2C4",  "#000000", "#0C0040", "#102E3C","#021E44","#0A3410", "#FFFFFF", "#221B15", "#C79B00"];
+  d3.csv("bobrossjoined.csv", function(dd) { 
+    // Everything after happens when we have loaded the csv file
+    const color_names = ["Alizarin Crismon","Black Gesso","Bright Red","Burnt Amber","Cadmium Yellow","Dark Sienna","Indian Red","Indian Yellow","Liquid Black","Liquid Clear","Midnight Black","Phthalo Blue","Phthalo Green","Prussian Blue","Sap Green","Titanium White","Van Dyke Brown","Yellow Ochre"];
+    const hexadec = ["#4E1500", "#000000", "#DB0000", "#8A3324", "#FFEC00", "#5F2E1F", "#CD5C5C", "#FFB800", "#000000", "#C0C2C4",  "#000000", "#0C0040", "#102E3C","#021E44","#0A3410", "#FFFFFF", "#221B15", "#C79B00"];
 
-      const generateData = (keys,n1,n2) => {
+    const generateData = (keys,n1,n2) => {
 
-        const data = d3.range(n2-n1+2).map((d, i) => {
-          //console.log(n1+i-1)
-          const row = {"Alizarin Crismon" : 0,"Black Gesso" : 0,"Bright Red" : 0,"Burnt Amber" : 0,"Cadmium Yellow" : 0,"Dark Sienna" : 0,"Indian Red" : 0,"Indian Yellow" : 0,"Liquid Black" : 0,"Liquid Clear" : 0,"Midnight Black" : 0,"Phthalo Blue" : 0,"Phthalo Green" : 0,"Prussian Blue" : 0,"Sap Green" : 0,"Titanium White" : 0,"Van Dyke Brown" : 0,"Yellow Ochre" : 0};
-          row["time"]= n1+i-1;
-          
-          dd.filter(element => element['SEASON']==n1+i-1).
-            forEach(function(elem) {
-              color_names.forEach(function(key) {
-                var number = Number(row[key]);
-                if (number == NaN) {number = 0};
-                row[key]=Number(number)+Number(elem[key]);
-              });
+      const data = d3.range(n2-n1+2).map((d, i) => {
+        const row = {"Alizarin Crismon" : 0,"Black Gesso" : 0,"Bright Red" : 0,"Burnt Amber" : 0,"Cadmium Yellow" : 0,"Dark Sienna" : 0,"Indian Red" : 0,"Indian Yellow" : 0,"Liquid Black" : 0,"Liquid Clear" : 0,"Midnight Black" : 0,"Phthalo Blue" : 0,"Phthalo Green" : 0,"Prussian Blue" : 0,"Sap Green" : 0,"Titanium White" : 0,"Van Dyke Brown" : 0,"Yellow Ochre" : 0};
+        row["time"]= n1+i-1;
+
+        dd.filter(element => element['SEASON']==n1+i-1).
+          forEach(function(elem) {
+            color_names.forEach(function(key) {
+              var number = Number(row[key]);
+              if (number == NaN) {number = 0};
+              row[key]=Number(number)+Number(elem[key]);
             });
-          return row;
-        });
-        
-        data.keys = keys
-		//console.log(data)
-        return data
-      };
+          });
+        return row;
+      });
+      
+      data.keys = keys
+      return data
+    };
 
 
-      const width = innerWidth
-      const height = innerHeight
+    const width = innerWidth
+    const height = innerHeight
 
 	  d3.select("#colorstream").select(".colorstreamSvgcontext").remove();
 	  
-      var svgcontext = d3.select("#colorstream").append('svg')
-        .attr("class","colorstreamSvgcontext")
-        .attr("width", outerWidth)
-        .attr("height", contextHeightTotal)
-		.append("g")
+    var svgcontext = d3.select("#colorstream").append('svg')
+      .attr("class","colorstreamSvgcontext")
+      .attr("width", outerWidth)
+      .attr("height", contextHeightTotal)
+  	.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Create a context for a brush
-      const xScaleGeneral=d3.scaleLinear()
-          .domain([0,31])
-          .range([0, width]);
-      var contextXScale = d3.scaleLinear()
-        .range([0, width])
-        .domain(xScaleGeneral.domain());
+    const xScaleGeneral=d3.scaleLinear()
+        .domain([0,31])
+        .range([0, width]);
+    var contextXScale = d3.scaleLinear()
+      .range([0, width])
+      .domain(xScaleGeneral.domain());
 
-      var contextAxis = d3.axisBottom(contextXScale)
-        .tickSize(contextHeight)
-        .tickPadding(10);
+    var contextAxis = d3.axisBottom(contextXScale)
+      .tickSize(contextHeight)
+      .tickPadding(10);
 
-      var contextArea = d3.area()
-        .x(function(d) {
-          return contextXScale(d.time);
-        })
-        .y0(contextHeight)
-        .y1(0)
-        .curve(d3.curveLinear);
+    var contextArea = d3.area()
+      .x(function(d) {
+        return contextXScale(d.time);
+      })
+      .y0(contextHeight)
+      .y1(0)
+      .curve(d3.curveLinear);
 
-      var brush = d3.brushX()
-        .extent([
-          [contextXScale.range()[0], 0],
-          [contextXScale.range()[1], contextHeight]
-        ])
-        .on("brush end", onBrush);
+    var brush = d3.brushX()
+      .extent([
+        [contextXScale.range()[0], 0],
+        [contextXScale.range()[1], contextHeight]
+      ])
+      .on("brush end", onBrush);
 
-      let context = svgcontext.append("g")
-        .attr("class", "context")
-        .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
+    let context = svgcontext.append("g")
+      .attr("class", "context")
+      .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
 
-      context.append("g")
-        .attr("class", "x axis top")
-        .attr("transform", "translate(0,0)")
-        .call(contextAxis)
+    context.append("g")
+      .attr("class", "x axis top")
+      .attr("transform", "translate(0,0)")
+      .call(contextAxis)
 
-      context.append("g")
-        .attr("class", "x brush")
-        .call(brush)
-        .selectAll("rect")
-        .attr("y", 0)
-        .attr("height", contextHeight);
+    context.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+      .selectAll("rect")
+      .attr("y", 0)
+      .attr("height", contextHeight);
 
-      context.append("text")
-        .attr("class", "instructions")
-        .attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
-        .text('Click and drag above to zoom / pan the data');
+    context.append("text")
+      .attr("class", "instructions")
+      .attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
+      .text('Click and drag above to zoom / pan the data');
 
-              // Brush handler. Get time-range from a brush and pass it to the charts. 
-      function onBrush() {
-        var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-        a=Math.ceil(b[0])
-        c=Math.floor(b[1])
-        if (c-a<1) {c=a+1;}
-        renderGeneratedData(a,c);
+            // Brush handler. Get time-range from a brush and pass it to the charts. 
+    function onBrush() {
+      var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+      a=Math.ceil(b[0])
+      c=Math.floor(b[1])
+      if (c-a<1) {c=a+1;}
+      renderGeneratedData(a,c);
 
-        
-      }
+      
+    }
     
-      const stack = d3.stack().offset(d3.stackOffsetWiggle)
-      const xValue = d => d.time
-      const xScale = d3.scaleLinear()
-      const yScale = d3.scaleLinear()
-      const colorScale = d3.scaleOrdinal().range(hexadec)
+    const stack = d3.stack().offset(d3.stackOffsetWiggle)
+    const xValue = d => d.time
+    const xScale = d3.scaleLinear()
+    const yScale = d3.scaleLinear()
+    const colorScale = d3.scaleOrdinal().range(hexadec)
 
 
-      const area = d3.area()
-        .x(d => xScale(xValue(d.data)))
-        .y0(d => yScale(d[0]))
-        .y1(d => yScale(d[1]))
-        .curve(d3.curveBasis)
+    const area = d3.area()
+      .x(d => xScale(xValue(d.data)))
+      .y0(d => yScale(d[0]))
+      .y1(d => yScale(d[1]))
+      .curve(d3.curveBasis)
+    
+    const render = (data) => {
+
+    d3.select(".colorstreamSvgchart").remove();
+
+    var svg = d3.select("#colorstream").insert("svg",":first-child")
+      .attr("class","colorstreamSvgchart")
+      .attr("width", outerWidth)
+      .attr("height", outerHeight)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    data.splice(0,1);
+    stack.keys(data.keys)
+    colorScale.domain(data.keys)
+    delete data.keys;
+    const stacked = stack(data);
+  	
+    xScale
+      .domain(d3.extent(data, d => d.time))
+      .range([0, width]);
+
+
+    yScale
+      .domain([
+        d3.min(stacked[0], d => d[0]),
+        d3.max(stacked[stacked.length - 1], d => d[1])
+      ])
+      .range([height, 0]);
+    
+    const transition = d3.transition().duration(1000);
+    
+    const paths = svg.selectAll('path').data(stacked)
+    paths
+      .enter().append('path')
+      .merge(paths)
+        .attr('fill', d => colorScale(d.key))
+        .attr('stroke', d => colorScale(d.key))
+      .transition(transition)
+        .attr('d', area);
+
+    const labels = svg.selectAll('text').data(stacked);
+    labels
+      .enter().append('text')
+        .attr('class', 'area-label')
+      .merge(labels)
+        .text(d => d.key)
+      .transition(transition)
+        .attr('transform', d3.areaLabel(area));
+
+    // Add the x Axis
+    var x_axis = d3.axisBottom()
+               .scale(xScale);
+
+    svg.append("g")
+    .attr("transform", "translate(0," + (innerHeight) + ")")
+    .call(x_axis);
+
+    svg.append("text")
+      .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+      .attr("transform", "translate("+ (innerWidth/2) +","+(outerHeight)+")")  // centre below axis
+      .text("Season");
+    }
       
-      const render = (data) => {
-
-      d3.select(".colorstreamSvgchart").remove();
-
-      var svg = d3.select("#colorstream").insert("svg",":first-child")
-        .attr("class","colorstreamSvgchart")
-        .attr("width", outerWidth)
-        .attr("height", outerHeight)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-        data.splice(0,1);
-        stack.keys(data.keys)
-        colorScale.domain(data.keys)
-        delete data.keys;
-        //console.log(data);
-        const stacked = stack(data);
-      	
-        xScale
-          .domain(d3.extent(data, d => d.time))
-          .range([0, width]);
-
-
-        yScale
-          .domain([
-            d3.min(stacked[0], d => d[0]),
-            d3.max(stacked[stacked.length - 1], d => d[1])
-          ])
-          .range([height, 0]);
-        
-        const transition = d3.transition().duration(1000);
-        
-        const paths = svg.selectAll('path').data(stacked)
-        paths
-          .enter().append('path')
-          .merge(paths)
-            .attr('fill', d => colorScale(d.key))
-            .attr('stroke', d => colorScale(d.key))
-          .transition(transition)
-            .attr('d', area);
-
-        const labels = svg.selectAll('text').data(stacked);
-        labels
-          .enter().append('text')
-            .attr('class', 'area-label')
-          .merge(labels)
-            .text(d => d.key)
-          .transition(transition)
-            .attr('transform', d3.areaLabel(area));
-
-                    // Add the x Axis
-        var x_axis = d3.axisBottom()
-                   .scale(xScale);
-        svg.append("g")
-        .attr("transform", "translate(0," + (innerHeight) + ")")
-       .call(x_axis);
-
-       svg.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate("+ (innerWidth/2) +","+(outerHeight)+")")  // centre below axis
-            .text("Season");
-      }
-      
-      const renderGeneratedData = (n1,n2) => {
-        render(generateData(color_names,n1,n2));
-      }
-      
-      renderGeneratedData(0,31);
+    const renderGeneratedData = (n1,n2) => {
+      render(generateData(color_names,n1,n2));
+    }
+    
+    renderGeneratedData(0,31);
 
 	});
 }
@@ -280,134 +278,127 @@ chord = function(){
 	const contextHeight = 50;
 	const contextTextHeight = 40;
 	const contextHeightTotal = contextHeight + contextTextHeight;
-    const contextWidth = width;
+  const contextWidth = width;
 	var margin = {top: 20, right: 10, bottom: 20, left: 10},
-	padding = {top: 20, right: 60, bottom: 60, left: 60},
-    outerWidth = rect.width,
-    outerHeight = rect.height,
-	innerWidth = outerWidth - margin.left - margin.right,
-	innerHeight = outerHeight - margin.top - margin.bottom,
-	width = innerWidth - padding.left - padding.right,
-	height = innerHeight - padding.top - padding.bottom;
+	    padding = {top: 20, right: 60, bottom: 60, left: 60},
+      outerWidth = rect.width,
+      outerHeight = rect.height,
+	    innerWidth = outerWidth - margin.left - margin.right,
+	    innerHeight = outerHeight - margin.top - margin.bottom,
+	    width = innerWidth - padding.left - padding.right,
+	    height = innerHeight - padding.top - padding.bottom;
+
 	var textPlaceholder = 60;
 
 
-d3.csv("bobrosscategorized.csv", function(csvdata) { 
+  d3.csv("bobrosscategorized.csv", function(csvdata) { 
+    // Everything after happens when we have loaded the csv file
+    let columns = [ "Landscapes","Frames", "Structures", "Plants", "Guests", "Weather", "Humans"];
 
-  let columns = [ "Landscapes","Frames", "Structures", "Plants", "Guests", "Weather", "Humans"];
-
-  const generateData = (columns, n1,n2) =>{
-    //console.log(n1,n2)
-
-    var data = new Array(columns.length*(columns.length-1));
-    for (var i = 0; i < columns.length*(columns.length-1); i++) {
-      data[i] = new Array(3);
-    }
-    //console.log(data)
-    for (var i = 0; i < columns.length; i++) {
-      //console.log(i)
-      var realindex = 0;
-      for (var j = 0; j < (columns.length); j++) {
-        //console.log(j)
-        if (i!=j){
-          data[(columns.length-1)*i+realindex][0] = columns[i];
-          data[(columns.length-1)*i+realindex][1] = columns[realindex];
-          data[(columns.length-1)*i+realindex][2] = 0.0;
-          realindex += 1;
-        } 
-        
+    const generateData = (columns, n1,n2) =>{
+      var data = new Array(columns.length*(columns.length-1));
+      for (var i = 0; i < columns.length*(columns.length-1); i++) {
+        data[i] = new Array(3);
       }
-    }
-    //console.log(data)
-    csvdata.filter(element=>(element['SEASON']>=n1)&&(element['SEASON']<=n2)).forEach(function(painting) {
       for (var i = 0; i < columns.length; i++) {
-        //console.log(painting[columns[i]])
-        if (painting[columns[i]]==1){
-          var realindex = 0;
-          for (var j = 0; j < (columns.length); j++) {
-            if (i!=j){
-              if (painting[columns[realindex]]==1){
-                data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
-              }
-            } 
+        var realindex = 0;
+        for (var j = 0; j < (columns.length); j++) {
+          if (i!=j){
+            data[(columns.length-1)*i+realindex][0] = columns[i];
+            data[(columns.length-1)*i+realindex][1] = columns[realindex];
+            data[(columns.length-1)*i+realindex][2] = 0.0;
             realindex += 1;
-          }
+          } 
         }
       }
-    })
-    return data
-  };
+      csvdata.filter(element=>(element['SEASON']>=n1)&&(element['SEASON']<=n2)).forEach(function(painting) {
+        for (var i = 0; i < columns.length; i++) {
+          if (painting[columns[i]]==1){
+            var realindex = 0;
+            for (var j = 0; j < (columns.length); j++) {
+              if (i!=j){
+                if (painting[columns[realindex]]==1){
+                  data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
+                }
+              } 
+              realindex += 1;
+            }
+          }
+        }
+      })
+      return data
+    };
 
-      const width = innerWidth
-      const height = innerHeight
+    const width = innerWidth
+    const height = innerHeight
 
 	  d3.select("#chord").select(".chordSvgcontext").remove();
 	  
-      var svgcontext = d3.select("#chord").append('svg')
-        .attr("class","chordSvgcontext")
-        .attr("width", outerWidth)
-        .attr("height", contextHeightTotal)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svgcontext = d3.select("#chord").append('svg')
+      .attr("class","chordSvgcontext")
+      .attr("width", outerWidth)
+      .attr("height", contextHeightTotal)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-      // Create a context for a brush
-      const xScaleGeneral=d3.scaleLinear()
-          .domain([0,31])
-          .range([0, width]);
-      var contextXScale = d3.scaleLinear()
-        .range([0, width])
-        .domain(xScaleGeneral.domain());
+    // Create a context for a brush
+    const xScaleGeneral=d3.scaleLinear()
+        .domain([0,31])
+        .range([0, width]);
+    var contextXScale = d3.scaleLinear()
+      .range([0, width])
+      .domain(xScaleGeneral.domain());
 
-      var contextAxis = d3.axisBottom(contextXScale)
-        .tickSize(contextHeight)
-        .tickPadding(10);
+    var contextAxis = d3.axisBottom(contextXScale)
+      .tickSize(contextHeight)
+      .tickPadding(10);
 
-      var contextArea = d3.area()
-        .x(function(d) {
-          return contextXScale(d.time);
-        })
-        .y0(contextHeight)
-        .y1(0)
-        .curve(d3.curveLinear);
+    var contextArea = d3.area()
+      .x(function(d) {
+        return contextXScale(d.time);
+      })
+      .y0(contextHeight)
+      .y1(0)
+      .curve(d3.curveLinear);
 
-      var brush = d3.brushX()
-        .extent([
-          [contextXScale.range()[0], 0],
-          [contextXScale.range()[1], contextHeight]
-        ])
-        .on("brush end", onBrush);
+    var brush = d3.brushX()
+      .extent([
+        [contextXScale.range()[0], 0],
+        [contextXScale.range()[1], contextHeight]
+      ])
+      .on("brush end", onBrush);
 
-      let context = svgcontext.append("g")
-        .attr("class", "context")
-        .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
+    let context = svgcontext.append("g")
+      .attr("class", "context")
+      .attr("transform", "translate(" + 0  + "," + (margin.top  - 50) + ")");
 
-      context.append("g")
-        .attr("class", "x axis top")
-        .attr("transform", "translate(0,0)")
-        .call(contextAxis)
+    context.append("g")
+      .attr("class", "x axis top")
+      .attr("transform", "translate(0,0)")
+      .call(contextAxis)
 
-      context.append("g")
-        .attr("class", "x brush")
-        .call(brush)
-        .selectAll("rect")
-        .attr("y", 0)
-        .attr("height", contextHeight);
+    context.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+      .selectAll("rect")
+      .attr("y", 0)
+      .attr("height", contextHeight);
 
-      context.append("text")
-        .attr("class", "instructions")
-        .attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
-        .text('Click and drag above to zoom / pan the data');
+    context.append("text")
+      .attr("class", "instructions")
+      .attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
+      .text('Click and drag above to zoom / pan the data');
 
-              // Brush handler. Get time-range from a brush and pass it to the charts. 
-      function onBrush() {
-        var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
-        a=Math.ceil(b[0])
-        c=Math.floor(b[1])
-        if (c-a<1) {c=a+1;}
-        renderGeneratedData(a,c);
-        
-      }
+    // Brush handler. Get time-range from a brush and pass it to the charts. 
+    function onBrush() {
+      var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
+      a=Math.ceil(b[0])
+      c=Math.floor(b[1])
+      if (c-a<1) {c=a+1;}
+      renderGeneratedData(a,c);
+      
+    }
 
 
   const render = (data) => {
@@ -415,16 +406,15 @@ d3.csv("bobrosscategorized.csv", function(csvdata) {
   	var size = 0;
   	if (width-2*textPlaceholder < height){
 		size = (width/2) - 2*textPlaceholder;
-	}
-	else {
-		size = (height/2) - textPlaceholder;
-	}
+  	} else {
+  		size = (height/2) - textPlaceholder;
+  	}
 	
     d3.select(".chordSvgchart").remove();
     var svg = d3.select("#chord").insert("svg",":first-child")
         .attr("class","chordSvgchart")
-        .attr("width", outerWidth) //outerWidth
-        .attr("height", outerHeight-contextHeightTotal); //outerHeight
+        .attr("width", outerWidth) 
+        .attr("height", outerHeight-contextHeightTotal); 
 	
     var colors = {"Frames" : "#000000","Structures" : "#776f6f","Plants" : "#399661","Landscapes" : "#55b247","Weather" : "#7cccff","Guests" : "#130ea0","Humans" : "#ffeec9"};
 
@@ -442,27 +432,26 @@ d3.csv("bobrosscategorized.csv", function(csvdata) {
         .labelPadding(.03)
         .fill(function(d){ return colors[d];});
 
-    //var width=1200, height=1100;
 
-	var xTranslation = 0;
-	if (width-2*textPlaceholder < height){
-		xTranslation = ((outerWidth/2));
-	}
-	else {
-		xTranslation = ((outerWidth/2));
-	}
+  	var xTranslation = 0;
+  	if (width-2*textPlaceholder < height){
+  		xTranslation = ((outerWidth/2));
+  	} else {
+  		xTranslation = ((outerWidth/2));
+  	}
 
-	svg.append("g").attr("transform", "translate("+ xTranslation + "," + ((height/2)-20) + ")").call(ch); //600, 480
-    // adjust height of frame in bl.ocks.org
-    d3.select(self.frameElement).style("height", height).style("width", width);
-  }
+  	svg.append("g").attr("transform", "translate("+ xTranslation + "," + ((height/2)-20) + ")").call(ch); //600, 480
+      // adjust height of frame in bl.ocks.org
+      d3.select(self.frameElement).style("height", height).style("width", width);
+    }
 
-  const renderGeneratedData = (n1,n2) => {
-        render(generateData(columns,n1,n2));
-      }
-      
-  renderGeneratedData(0,31);   
-});}
+    const renderGeneratedData = (n1,n2) => {
+      render(generateData(columns,n1,n2));
+    }
+        
+    renderGeneratedData(0,31);   
+  });
+}
 
 var currentCategory;
 var currentD;
