@@ -256,14 +256,27 @@ path {
   font-size: 15px;*/
 }
 
+#image{
+	width: 100%;
+}
 
+#episode-title {
+	font-family: 'Lily Script One', cursive;
+	font-size: 2em;
+	margin: 0;
+}
 
+#episode-SE {
+	text-align: right;
+	margin: 0;
+	margin-bottom: 1.5vh;
+}
 
-svg {
+#conceptMap {
 	font: 12px sans-serif;
 	font-family: 'Raleway', sans-serif;
 	
-}
+} 
 
 text {
 	pointer-events: none;
@@ -275,11 +288,13 @@ text {
     position: absolute;
 	float: right;
 	font-family: 'Raleway', sans-serif;
+	width: 22vw;
+	margin-top: 15vh;
 	
 }
 
 #video-url{
-	color: blue;
+	color: steelblue;
 }
 
 .inner_node rect {

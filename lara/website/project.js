@@ -1111,7 +1111,7 @@ function render_data() {
 
         for (var i = 0; i < d.related_links.length; i++){
             d3.select('#' + d.related_links[i]).attr('stroke-width', '5px');
-            d3.select('#' + d.related_links[i]).attr("stroke","blue");
+            d3.select('#' + d.related_links[i]).attr("stroke","steelblue");
             //d3.select('#' + d.related_links[i]).style("fill","#00BFFF");
         }
     }
@@ -1175,7 +1175,9 @@ function render_data() {
         d3.select("#episode-title").text(d.name);
         d3.select("#season").text(d.season);
         d3.select("#episode").text(d.episode);
-        d3.select("#image").attr("src", d.image).attr("width", 600).attr("height", 400);
+
+        d3.select("#image").attr("src", d.image);
+
         d3.select("#video-url").attr("href", d.video).text(d.video);
     }
     // end of widget
@@ -1189,7 +1191,7 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     /// BRUSH
     var rect = document.getElementById('chord').getBoundingClientRect();
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    var margin = {top: 20, right: 10, bottom: 20, left: 10},
     padding = {top: 20, right: 60, bottom: 60, left: 60},
     outerWidth = rect.width,
     outerHeight = 200,
@@ -1198,8 +1200,10 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
     width = innerWidth - padding.left - padding.right,
     height = innerHeight - padding.top - padding.bottom;
     const contextHeight = 50;
+	const contextTextHeight = 40;
     const contextHeightTotal = contextHeight + 40;
     const contextWidth = outerWidth;
+
 
 
     const xScaleGeneral=d3.scaleLinear()
@@ -1255,7 +1259,8 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     context.append("text")
         .attr("class", "instructions")
-        .attr("transform", "translate(0," + (contextHeight +30) + ")")
+        //.attr("transform", "translate(0," + (contextHeight +30) + ")")
+		.attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
         .text('Click and drag above to zoom / pan the data');
             // Brush handler. Get time-range from a brush and pass it to the charts.
 
