@@ -256,6 +256,9 @@ path {
   font-size: 15px;*/
 }
 
+#image{
+	width: 100%;
+}
 
 #episode-title {
 	font-family: 'Lily Script One', cursive;
