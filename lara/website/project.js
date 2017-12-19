@@ -1119,8 +1119,8 @@ function render_data() {
     function mouseclickNode(d, data)
     {
         // bring to front
-        var thumbnailHeight = 50;
-        var thumbnailWidth = 75;
+        var thumbnailHeight = 100;
+        var thumbnailWidth = 150;
         d3.selectAll('.links .link').sort(function(a, b){ return d.related_links.indexOf(a.id); });	
         console.log("Adding gallery!");
         d3.select("#gallery").remove();
@@ -1175,7 +1175,7 @@ function render_data() {
         d3.select("#episode-title").text(d.name);
         d3.select("#season").text(d.season);
         d3.select("#episode").text(d.episode);
-        d3.select("#image").attr("src", d.image).attr("width", 300).attr("height", 200);
+        d3.select("#image").attr("src", d.image).attr("width", 600).attr("height", 400);
         d3.select("#video-url").attr("href", d.video).text(d.video);
     }
     // end of widget
