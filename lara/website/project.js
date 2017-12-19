@@ -1045,6 +1045,7 @@ function render_data() {
         .attr('stroke-width', link_width);
 
     // outer nodes
+    console.log("Data l: ", data);
 
     var onode = svg_chart.append('g').selectAll(".outer_node")
         .data(data.outer)
@@ -1052,7 +1053,8 @@ function render_data() {
         .attr("class", "outer_node")
         .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
         .on("mouseover", mouseover)
-        .on("mouseout", mouseout);
+        .on("mouseout", mouseout)
+        .on("click", function(d){console.log("Mouse click node! "); mouseclickNode(d, data.inner) } );
 
     onode.append("circle")
         .attr('id', function(d) { return d.id; })
@@ -1114,6 +1116,45 @@ function render_data() {
         }
     }
 
+    function mouseclickNode(d, data)
+    {
+        // bring to front
+        var thumbnailHeight = 50;
+        var thumbnailWidth = 75;
+        d3.selectAll('.links .link').sort(function(a, b){ return d.related_links.indexOf(a.id); });	
+        console.log("Adding gallery!");
+        d3.select("#gallery").remove();
+        d3.select("#detailedView").append("div").attr("id", "gallery");
+
+        var srcList = [];
+        for (var i = 0; i < d.related_nodes.length; i++){   
+            testName = d3.select('#' + d.related_nodes[i] + '-txt').text();
+            
+            data.forEach(function(dataD) {
+                //console.log(dataD);
+                if(dataD.name == testName){
+                    srcList.push(dataD.image);
+                    console.log(dataD.image);
+                }
+            });
+        };
+
+        
+
+        for (var i = 0; i < d.related_nodes.length-1; i++)
+        {
+            var col = i%4;
+            if(col == 0){
+                var myRow = d3.select("#gallery").append("div");
+            }
+            
+            myRow.append("img").attr("src", srcList[i])
+                    .attr("width", thumbnailWidth).attr("height", thumbnailHeight);
+        
+        }
+    }
+
+
     function mouseout(d)
     {
         for (var i = 0; i < d.related_nodes.length; i++)
@@ -1134,7 +1175,7 @@ function render_data() {
         d3.select("#episode-title").text(d.name);
         d3.select("#season").text(d.season);
         d3.select("#episode").text(d.episode);
-        d3.select("#image").attr("src", d.image);
+        d3.select("#image").attr("src", d.image).attr("width", 300).attr("height", 200);
         d3.select("#video-url").attr("href", d.video).text(d.video);
     }
     // end of widget
