@@ -257,7 +257,17 @@ path {
 }
 
 
+#episode-title {
+	font-family: 'Lily Script One', cursive;
+	font-size: 2em;
+	margin: 0;
+}
 
+#episode-SE {
+	text-align: right;
+	margin: 0;
+	margin-bottom: 1.5vh;
+}
 
 #conceptMap {
 	font: 12px sans-serif;
@@ -275,6 +285,8 @@ text {
     position: absolute;
 	float: right;
 	font-family: 'Raleway', sans-serif;
+	width: 22vw;
+	margin-top: 15vh;
 	
 }
 

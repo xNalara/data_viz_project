@@ -1175,7 +1175,7 @@ function render_data() {
         d3.select("#episode-title").text(d.name);
         d3.select("#season").text(d.season);
         d3.select("#episode").text(d.episode);
-        d3.select("#image").attr("src", d.image).attr("width", 300).attr("height", 200);
+        d3.select("#image").attr("src", d.image).attr("width", "100%");
         d3.select("#video-url").attr("href", d.video).text(d.video);
     }
     // end of widget
