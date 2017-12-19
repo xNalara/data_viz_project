@@ -1111,7 +1111,7 @@ function render_data() {
 
         for (var i = 0; i < d.related_links.length; i++){
             d3.select('#' + d.related_links[i]).attr('stroke-width', '5px');
-            d3.select('#' + d.related_links[i]).attr("stroke","blue");
+            d3.select('#' + d.related_links[i]).attr("stroke","steelblue");
             //d3.select('#' + d.related_links[i]).style("fill","#00BFFF");
         }
     }
