@@ -805,7 +805,7 @@ data = [];
 svg_chart = null;
 svg_brush = null;
 
-const maxSelectedSeasons = 3;
+const maxSelectedSeasons = 2;
 
 function load_data(episode) {
         var newElem = [];
@@ -837,7 +837,7 @@ function get_filtered_data(start, stop) {
         episode = obj[i];
         season = episode[3]; // 2 is position of the episode.EPISODE in the obj[] element
 
-        if(season >= start && season < stop) {
+        if(season > start && season <= stop) {
             filtered.push(episode);
         }
     }
@@ -937,9 +937,9 @@ function render_data() {
         .clamp(true);
 
     //var color = "#00BFFF"; // deep sky blue
-    var diameter = 900;
+    var diameter = 1.1*innerHeight;
     var rect_width = 120;
-    var rect_height = 18;
+    var rect_height = 16;
 
     var link_width = "1px";
 
@@ -1143,28 +1143,30 @@ function render_data() {
 // main entry point
 d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
     csvdata.forEach(load_data);
-    data = get_filtered_data(0, 3);
+    data = get_filtered_data(0, 2);
     render_data();
 
     /// BRUSH
+    var rect = document.getElementById('chord').getBoundingClientRect();
     var margin = {top: 20, right: 20, bottom: 20, left: 20},
     padding = {top: 20, right: 60, bottom: 60, left: 60},
-    outerWidth = 800,
+    outerWidth = rect.width,
     outerHeight = 200,
     innerWidth = outerWidth - margin.left - margin.right,
     innerHeight = outerHeight - margin.top - margin.bottom,
     width = innerWidth - padding.left - padding.right,
     height = innerHeight - padding.top - padding.bottom;
     const contextHeight = 50;
-    const contextWidth = width;
+    const contextHeightTotal = contextHeight + 40;
+    const contextWidth = outerWidth;
 
 
     const xScaleGeneral=d3.scaleLinear()
         .domain([0,31])
-        .range([0, width]);
+        .range([0, innerWidth]);
 
     var contextXScale = d3.scaleLinear()
-        .range([0, width])
+        .range([0, innerWidth])
         .domain(xScaleGeneral.domain());
 
     var contextAxis = d3.axisBottom(contextXScale)
@@ -1187,13 +1189,18 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
         .on("end", onBrush);
 
     let context = d3.select("#brushContainer").append("svg")
-        .attr("width", outerWidth)
-        .attr("height", outerHeight)
-        .append("g")
-        .attr("class", "context");
+        .attr("width", contextWidth)
+        .attr("height", contextHeightTotal)
+    .append("g")
+        .attr("class", "context")
+        .attr("transform", "translate("+10+","+(-10)+")");
+
+    
 
     context.append("g")
         .attr("class", "x axis top")
+        .attr("width", contextWidth)
+        .attr("height", contextHeight)
         .attr("transform", "translate(0,0)")
         .call(contextAxis);
 
@@ -1202,11 +1209,12 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
         .call(brush)
         .selectAll("rect")
         .attr("y", 0)
+        .attr("width", contextWidth)
         .attr("height", contextHeight);
 
     context.append("text")
         .attr("class", "instructions")
-        .attr("transform", "translate(0," + (contextHeight + 40) + ")")
+        .attr("transform", "translate(0," + (contextHeight +30) + ")")
         .text('Click and drag above to zoom / pan the data');
             // Brush handler. Get time-range from a brush and pass it to the charts.
 

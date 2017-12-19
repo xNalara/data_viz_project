@@ -39,6 +39,7 @@ a:link {
   color: white;
   text-decoration-line: none;
 }
+
 a:visited {
   color: white;
 }
@@ -268,7 +269,12 @@ text {
 
 .details {
     position: absolute;
-    float: right;
+	float: right;
+	
+}
+
+#video-url{
+	color: blue;
 }
 
 .inner_node rect {
