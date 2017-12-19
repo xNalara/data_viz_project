@@ -1211,10 +1211,10 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     const xScaleGeneral=d3.scaleLinear()
         .domain([0,31])
-        .range([0, width]);
+        .range([0, innerWidth]);
 
     var contextXScale = d3.scaleLinear()
-        .range([0, width])
+        .range([0, innerWidth])
         .domain(xScaleGeneral.domain());
 
     var contextAxis = d3.axisBottom(contextXScale)
