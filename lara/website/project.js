@@ -1189,7 +1189,7 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     /// BRUSH
     var rect = document.getElementById('chord').getBoundingClientRect();
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    var margin = {top: 20, right: 10, bottom: 20, left: 10},
     padding = {top: 20, right: 60, bottom: 60, left: 60},
     outerWidth = rect.width,
     outerHeight = 200,
@@ -1198,8 +1198,10 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
     width = innerWidth - padding.left - padding.right,
     height = innerHeight - padding.top - padding.bottom;
     const contextHeight = 50;
+	const contextTextHeight = 40;
     const contextHeightTotal = contextHeight + 40;
     const contextWidth = outerWidth;
+
 
 
     const xScaleGeneral=d3.scaleLinear()
@@ -1255,7 +1257,8 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     context.append("text")
         .attr("class", "instructions")
-        .attr("transform", "translate(0," + (contextHeight +30) + ")")
+        //.attr("transform", "translate(0," + (contextHeight +30) + ")")
+		.attr("transform", "translate(" + -margin.left + "," + (contextHeight + contextTextHeight) + ")")
         .text('Click and drag above to zoom / pan the data');
             // Brush handler. Get time-range from a brush and pass it to the charts.
 
