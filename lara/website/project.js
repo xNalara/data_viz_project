@@ -305,7 +305,7 @@ chord = function(){
         for (var j = 0; j < (columns.length); j++) {
           if (i!=j){
             data[(columns.length-1)*i+realindex][0] = columns[i];
-            data[(columns.length-1)*i+realindex][1] = columns[realindex];
+            data[(columns.length-1)*i+realindex][1] = columns[j];
             data[(columns.length-1)*i+realindex][2] = 0.0;
             realindex += 1;
           } 
@@ -317,15 +317,16 @@ chord = function(){
             var realindex = 0;
             for (var j = 0; j < (columns.length); j++) {
               if (i!=j){
-                if (painting[columns[realindex]]==1){
-                  data[(columns.length-1)*i+realindex][2] =data[(columns.length-1)*i+realindex][2]+1;
+                if (painting[columns[j]]==1){
+                  data[(columns.length-1)*i+realindex][2] = data[(columns.length-1)*i+realindex][2]+1;
                 }
-              } 
-              realindex += 1;
+                realindex += 1;
+              }
             }
           }
         }
       })
+      console.log(data)
       return data
     };
 
