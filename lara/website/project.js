@@ -138,6 +138,7 @@ colorstream = function(){
 
     var contextAxis = d3.axisBottom(contextXScale)
       .tickSize(contextHeight)
+	  .ticks(31)
       .tickPadding(10);
 
     var contextArea = d3.area()
@@ -353,6 +354,7 @@ chord = function(){
 
     var contextAxis = d3.axisBottom(contextXScale)
       .tickSize(contextHeight)
+	  .ticks(31)
       .tickPadding(10);
 
     var contextArea = d3.area()
@@ -584,6 +586,7 @@ d3.csv("elements-by-episode_new.csv", function(csvdata) {
 
       var contextAxis = d3.axisBottom(contextXScale)
         .tickSize(contextHeight)
+		.ticks(31)
         .tickPadding(10);
 
       var contextArea = d3.area()
@@ -1217,6 +1220,7 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
     var contextAxis = d3.axisBottom(contextXScale)
         .tickSize(contextHeight)
+		.ticks(31)
         .tickPadding(10);
 
     var contextArea = d3.area()
