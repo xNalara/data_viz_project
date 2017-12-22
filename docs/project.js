@@ -813,7 +813,6 @@ const maxSelectedSeasons = 2;
 
 function load_data(episode) {
         var newElem = [];
-        //console.log(episode.TITLE);
         cols = [];
 
         // add list of elements appearing
@@ -845,8 +844,6 @@ function get_filtered_data(start, stop) {
             filtered.push(episode);
         }
     }
-
-    console.log("start, stop: ", start, stop, " = ", filtered.length);
 
     return filtered;
 }
@@ -1027,8 +1024,6 @@ function render_data() {
                 return d.vx;
             });
 
-
-    console.log("Append still works!");
     d3.select(".my-chart").remove();
     svg_chart = d3.select("#conceptMap").append("svg")
         .attr("width", diameter)
@@ -1049,7 +1044,6 @@ function render_data() {
         .attr('stroke-width', link_width);
 
     // outer nodes
-    console.log("Data l: ", data);
 
     var onode = svg_chart.append('g').selectAll(".outer_node")
         .data(data.outer)
@@ -1058,7 +1052,7 @@ function render_data() {
         .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("click", function(d){console.log("Mouse click node! "); mouseclickNode(d, data.inner) } );
+        .on("click", function(d){ mouseclickNode(d, data.inner) } );
 
     onode.append("circle")
         .attr('id', function(d) { return d.id; })
@@ -1126,7 +1120,6 @@ function render_data() {
         var thumbnailHeight = 100;
         var thumbnailWidth = 150;
         d3.selectAll('.links .link').sort(function(a, b){ return d.related_links.indexOf(a.id); });	
-        console.log("Adding gallery!");
         d3.select("#gallery").remove();
         d3.select("#detailedView").append("div").attr("id", "gallery");
 
@@ -1138,7 +1131,6 @@ function render_data() {
                 //console.log(dataD);
                 if(dataD.name == testName){
                     srcList.push(dataD.image);
-                    console.log(dataD.image);
                 }
             });
         };
@@ -1175,7 +1167,6 @@ function render_data() {
 
     function mouseclick(d)
     {
-        console.log(d);
         d3.select("#episode-title").text(d.name);
         d3.select("#season").text(d.season);
         d3.select("#episode").text(d.episode);
@@ -1270,8 +1261,6 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
             // Brush handler. Get time-range from a brush and pass it to the charts.
 
     function onBrush() {
-        console.log(" You changed the brush filter!!! ");
-        console.log("In transition: ", inTransition);
 
         var b = d3.event.selection === null ? contextXScale.domain() : d3.event.selection.map(contextXScale.invert);
 
@@ -1282,7 +1271,6 @@ d3.csv("elements-by-episode_new_concept_map.csv", function(csvdata) {
 
         if(delta === 0) { return; }
 
-        console.log("Filter data now...");
 
         if (delta > maxSelectedSeasons && inTransition === 0) {
             var l = xScaleGeneral(minChosen);
