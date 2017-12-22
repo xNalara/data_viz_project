@@ -230,7 +230,7 @@ In figure \ref{fig:final3} we see the color stream as described before. We added
 
 \section{The Concept Map}
 \newthought{While thinking about the right way} to present the elements in a graph, on the website 
- - "The Conversation" website -  we found the inspiration - concept map shown in figure x. We decided to use this idea to present elements drawn in each episode. First implementation is shown in figure x and it presents elements drawn in each episode during the first season of the TV show. Further we want to show the elements for all seasons - in total there are 31 seasons. As this probably will not fit into single graph, we will enable filtering by seasons, initially showing first few seasons. We also plan to provide filtering by different elements (for example trees, cottages, etc) or similar groups of elements (mountain landscape, winter landscape, etc).
+ - "The Conversation" website -  we found the inspiration - concept map shown in Figure \ref{fig:concept1}. We decided to use this idea to present elements drawn in each episode. First implementation is shown in Figure \ref{fig:concept2} and it presents elements drawn in each episode during the first season of the TV show. Further we want to show the elements for all seasons - in total there are 31 seasons. As this probably will not fit into single graph, we will enable filtering by seasons, initially showing first few seasons. We also plan to provide filtering by different elements (for example trees, cottages, etc) or similar groups of elements (mountain landscape, winter landscape, etc).
 
 \begin{figure}
 	\includegraphics{Images/conceptMapIdea.png}
@@ -244,6 +244,26 @@ In figure \ref{fig:final3} we see the color stream as described before. We added
 	\label{fig:concept2}
 \end{figure}
 
+The first implementation showed in the Figure  \ref{fig:concept2} is using the mocked data, the next step was to add the real dataset. This resulted with graph that we were not able to understand, as there were too many links between the nodes. Because of this we decided to use the brush and to bound the maximum number of the seasons to two. In this way we achieve that the concept map is always useful. In Figure \ref{fig:concept3} this can be observed. \\
+
+
+
+\begin{figure}[!h]
+	\includegraphics{Images/detailsPainting.png}
+	\caption{Painting details - When clicked on one of the images in the center of the circle, right from the painting the details are shown. }
+	\label{fig:concept3}
+\end{figure}
+
+\newthought{Besides of the brush}, in order to make our chart easier to use and also to give more information to the users, we decided to add details about each painting. When selecting one of the paintings places in the center of the circle, right from the chart details are appearing, as shown in Figure \ref{fig:concept3}. First of all, the links to the elements, which are appearing on this painting, are bolded in steel blue. Painting details, such as season and episode numbers are shown on the right side of the window.  \\
+
+\newthought{Element gallery} is shown also on the right side of the window. One example can be observed on Figure  \ref{fig:concept4}, where element Cabin is selected. This element appears on four images that are shown on the right side of the window after selection. \\
+
+\begin{figure}[!h]
+	\includegraphics{Images/elementGallery.png}
+	\caption{Element gallery - When one of the elements is selected, all images where this elements appears are shown on the right side of the window in the Gallery section}
+	\label{fig:concept4}
+\end{figure}
+
 \section{Bar Charts}
 \newthought{For creating a datastructure,} we first read the data about the appearances of elements in paintings and the data about categories and their corresponding elements from the csv files. In fact, the data has the form of a matrix with a 1, if the element appears in a painting, else the entry is 0. Since some of the columns where redundant, we had to clean the data first. In fact, we deleted the columns \quo{frames} (since we can compute this column from all the other elements that belong to the category \quo{frames}) and \quo{lakes} since it was zero. After reading the file, we use a filter to extract only the data of the seasons that were chosen with the brush. We construct an array with the length of the total amount of all possible elements. Each entry has another array of length 3. The first entry is for category, the second for the element and the third for the total amount of the element. By iterating through the data from the csv file, we increase the total amount for every element, if it appears in a painting. In the next we use the data from the other csv file, that tells us to which category the elements belong. The corresponding category is added to the data structure. Thereafter we construct two more arrays from this datastructure. The first array contains the summed up values for each category. The second array contains an array for each category. This array contains all elements of this category and their total amount for the selected part of the dataset. \\
 
@@ -254,6 +274,12 @@ If a category is clicked the mouseover is deactivated and the detailed (element)
 
 \chapter{Evaluation}
 \section{Concept Map}
+\newthought {Idea of using this concept map} is found to be very interesting and useful for the users, as it gives really nice insight into the paintings and elements shown in each of the paitings. It was very difficult to show all the data in this kind of chart, and this is solved by using brush. Brush is bounded to use maximum two seasons - so that the number of paintings is not too large to fit into this chart.\\
+\newthought {So we can conclude} that the downside of this chart is that it can not show too many paintings. But beside of this downside, we find that the chart gives us really useful information about the statistics of the paintings and that usage of the brush solves the problem of too many pain. \\
+
+
+
+
 \section{Bar Charts}
 The solution with the two depending bar charts could also have been replaced by a typical graph. But the bar charts have some advantages compared to a graph. First of all the total number of elements in categories as well as the total number of appearances of these elements differ a lot. For example, in the category \quo{Humans} are only two elements whereas in the category \quo{Landscapes} are thirteen elements. Also the total amount of appearances of elements in the \quo{Human} category are much less than the appearances of elements from the \quo{Landscapes} category. So if we would have used a typical graph with linear scaling and the total amount of appearances on the y-axis and the seasons on the x-axis to visualize this, the values shown on the y-axis would have such a big difference that the graph might not be readable anymore (just take a look at \quo{Humans} with four appearances and \quo{Plants} with 1424 appearances).
 Moreover, by using a graph as described above we would not be able to visualize the categories as we did it in the bar chart. With the bar chart and the brush we can explore the portion of each category in the chosen seasons, and we realize that they never change during 31 episodes: the majority of the elements belong always to the category \quo{Plants}, followed by the category \quo{Landscapes}.
@@ -261,10 +287,56 @@ Furthermore, in the detailed bar chart we are able to directly compare the eleme
 A possible disadvantage of the bar chart are the categories. By the categorization it is not possible to directly compare two elements from different categories. 
 
 \chapter{Further Work}
+\section{Concept Map}
+\newthought {Further work in the concept map} would be exploring what is the best way to utilize this map with large number of central nodes - in this case paintings. For now we solved this problem by using brush which we bounded on maximum two seasons. But this should be improved.\\
+
+\newthought {Another possible improvement} could be done when showing the element gallery. At this point it is shown on the right side of the window, but it might be good to place it under the brush, in a line as shown in Figure \ref{fig:final1}. \\
+
 \section{Bar Charts}
 As mentioned above we could improve the bar charts in a way that allows the user to choose elements from different categories he or she wants to compare. We could implement this by adding a third bar chart. By clicking on the element in the detailed bar charts this element will be added to the third bar chart in order to allow the user the choose the important elements by him- or herself. 
 
 \chapter{Conclusion}
+\newthought {Finding the right way to visualize} the statistics in paintings was very interesting and challenging. We explored the related work in analysis of Bob Ross's paintings and we found one related website. This was additional motivation for us to succeed and to be among the first to gain some interesting insights into the statistics of elements painted, distribution of colors during the time, and the ways that the number of different elements painted was changing during the time. All statistics can be viewed on our website, by trying out the visualization charts. Here we show some of the interesting conclusions we found for the paintings: \\
+
+\begin{itemize}
+\item Elements that were drawn the most are trees, mountains and lakes.
+\item Categories mostly drawn are plants and landscapes, which is confirming the previous conclusion. 
+\item Regarding the colours, burnt amber vanishes during the end of eight season and it almost does not appear again.  
+\item Usage of phthalo green color also disappears during the tenth season and it appears but in much lower percentage than at the beginning. 
+\item Dark sienna appears beginning of fifth season and it is continuously used until the last season. 
+\item Midnight black is gaining on popularity during the sixth and seventh season. 
+\end{itemize}
+
+
+\newthought {We are very satisfied} with what have we learned not just about the good practices in data visualization area, but also about the Bob Ross's paintings. \\
+
+
+\chapter{Peer reviews}
+In general we had very good repartition of the tasks and subtasks, by splitting the work in such way that each of the team members was working on different tasks. The communication has improved throught the weeks and we helped each other very reactively and were also learning from each other. 
+
+\section{Peer review by Lara Wietschorke}
+\begin{itemize}
+\item \textbf{Preparation - were they prepared during team meetings?} Yes.
+\item \textbf{Contribution - did they contribute productively to the team discussion and work?} Yes.
+\item \textbf{Respect for others' ideas - did they encourage others to contribute their ideas?} Yes.
+\item \textbf{Flexibility - were they flexible when disagreements occurred?} Yes.
+\end{itemize}
+
+\section{Peer review by Robin Clerc}
+\begin{itemize}
+\item \textbf{Preparation - were they prepared during team meetings?} Yes.
+\item \textbf{Contribution - did they contribute productively to the team discussion and work?} Yes.
+\item \textbf{Respect for others' ideas - did they encourage others to contribute their ideas?} Yes.
+\item \textbf{Flexibility - were they flexible when disagreements occurred?} Yes.
+\end{itemize}
+
+\section{Peer review by Kristina Satara}
+\begin{itemize}
+\item \textbf{Preparation - were they prepared during team meetings?} Yes.
+\item \textbf{Contribution - did they contribute productively to the team discussion and work?} Yes.
+\item \textbf{Respect for others' ideas - did they encourage others to contribute their ideas?} Yes.
+\item \textbf{Flexibility - were they flexible when disagreements occurred?} Yes.
+\end{itemize}
 
 
 %%
