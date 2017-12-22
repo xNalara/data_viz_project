@@ -1,0 +1,92 @@
+<html>
+<head>
+  <title>HTML Document</title>
+  <link rel="stylesheet" href="project.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  
+<!--   <script type="text/javascript" src="chart.js" ></script> -->
+  <link href="https://fonts.googleapis.com/css?family=Lobster+Two" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css?family=Lily+Script+One" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://unpkg.com/d3@4.10.0"></script>
+  <script src="https://unpkg.com/d3-area-label@1.0.0"></script>
+  <script src="viz.v1.1.0.min.js"></script>
+ 
+  <script type="text/javascript" src="project.js" ></script>
+	
+</head>
+  <body>
+	<div id="container">
+		<div id="header">
+			<div id="heading">
+
+				<h1>The Joy of Painting</h1>
+
+			</div>
+			<div id="subheader">
+				<div><a href="#paintings"><h2 class="subheading currentlyShown">Paintings</h2></a></div>
+				<div><a href="#elements"><h2 class="subheading currentlyNotShown">Elements</h2></a></div>
+				<div><a href="#colors"><h2 class="subheading currentlyNotShown">Colors</h2></a></div>
+			</div>
+		</div>
+		
+		<div id="content">
+			<div id="paintingsBox">
+				<div class="anchor" id="paintings"></div>
+				<h2>Paintings</h2>
+				<h3>&laquo We want happy paintings. Happy paintings. If you want sad things, watch the news. &raquo</h3>
+				<div>
+					<span class="chart" id="conceptMap"></span>
+					<span class="details" id="detailedView">
+							<p id="episode-title">A Walk in the Woods</p>
+							<p id="episode-SE">Season <span id="season">1</span>, Episode <span id="episode">1</span></p>
+							<img id="image" src="http://twoinchbrush.com/images/painting282.png"></img>
+							<p>Watch the full episode at: <a id="video-url" href="">https://youtu.be/oh5p5f5_-7A</a></p> 
+							<div height="5vh"></div>
+							<p id="episode-title">Gallery</p>
+							<div id="gallery">
+								<p><i>No images shown? Select an element!</i></p>
+							</div>
+							
+					</span>
+			</div>
+			<div class="brush" id="brushContainer"></div>
+				<div id="empty"></div>
+				<div id="empty"></div>
+			</div>
+			<div id="elementsBox">
+				<div class="anchor" id="elements"></div>
+				<h2>Elements</h2>
+				<h3>&laquo They say everything looks better with odd numbers of things. But sometimes I put even numbers — just to upset the critics. &raquo</h3>		
+				<div id="barChart">
+					<div id="overallChart"></div>
+					<div id="detailedChart"></div>
+				</div>
+				<div id="empty"></div>
+				<div id="empty"></div>
+				<div id="chord"></div>
+				<div id="empty"></div>
+				<div id="empty"></div>
+				<div id="empty"></div>
+			</div>
+			<div id="colorsBox">
+				<div class="anchor" id="colors"></div>
+				<h2>Colors</h2>
+				<h3>&laquo You have to allow the paint to break to make it beautiful. &raquo</h3>
+				<div id="colorstream"></div>
+				<div id="empty"></div>
+			</div>
+		</div>
+		
+		<div id="footer">
+			<div id="subfooter">
+				<div><p>© Robin Clerc, Kristina Satara, Lara Wietschorke 2017</p></div>
+				<div></div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
